@@ -2,38 +2,61 @@
 
 @section('content')
 <div class="container-fluid">
-    <h3 class="mb-4">Pengaduan Masyarakat</h3>
-    <p class="text-muted">"Masukan atau keluhan yang disampaikan masyarakat mengenai pekerjaan atau pelayanan yang diterima. Feedback berguna untuk menemukan masalah, melakukan perbaikan, dan meningkatkan kepuasan masyarakat."</p>
+    <h3 class="mb-4">Pengaduan & Pesan Masyarakat</h3>
+    <p class="text-muted mb-4">Daftar pesan, keluhan, dan masukan yang dikirim oleh publik melalui form Kontak dan Layanan.</p>
 
     <div class="row">
-        @foreach ($pengaduans as $pengaduan)
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm rounded-3 border-0">
-                <div class="card-body text-center pb-0">
-                    @if ($pengaduan->foto_pengadu)
-                        <img src="{{ asset('storage/' . $pengaduan->foto_pengadu) }}" alt="{{ $pengaduan->nama }}" class="rounded-circle mb-3" style="width: 80px; height: 80px; object-fit: cover;">
-                    @else
-                        {{-- Placeholder jika tidak ada foto --}}
-                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <span class="text-muted fs-5"><i class="bi bi-person"></i></span>
+        @forelse ($pengaduans as $pengaduan)
+        <div class="col-lg-4 col-md-6 mb-4">
+            {{-- Card styling diambil dari layout global, tapi kita tambahkan h-100 --}}
+            <div class="card h-100"> 
+                <div class="card-body d-flex flex-column">
+                    
+                    {{-- Bagian Header Kartu (Info Pengirim) --}}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; flex-shrink: 0;">
+                            {{-- Ambil 2 huruf pertama dari nama --}}
+                            <span class="fw-bold fs-5 text-primary">{{ strtoupper(substr($pengaduan->nama, 0, 2)) }}</span>
                         </div>
-                    @endif
-                    <h5 class="card-title mb-1">{{ $pengaduan->nama }}</h5>
-                    <p class="card-text text-muted mb-3">{{ $pengaduan->status_pengirim ?? 'Umum' }}</p>
-                </div>
-                <div class="card-footer bg-white border-top-0 pt-0">
-                    <p class="card-text fst-italic">"{{ Str::limit($pengaduan->isi_pengaduan, 120) }}"</p>
-                    <small class="text-muted float-end">{{ $pengaduan->created_at->format('d/m/Y') }}</small>
+                        <div>
+                            <h5 class="card-title mb-0 fs-6 fw-bold">{{ $pengaduan->nama }}</h5>
+                            <small class="text-muted">{{ $pengaduan->email ?? 'Email tidak ada' }}</small>
+                        </div>
+                    </div>
+
+                    {{-- Isi Pesan/Pengaduan --}}
+                    <p class="card-text fst-italic text-dark bg-light p-3 rounded-3">
+                        "{{ $pengaduan->isi_pengaduan }}"
+                    </p>
+
+                    {{-- Footer Kartu (Tanggal) --}}
+                    <div class="mt-auto text-end">
+                        <small class="text-muted">{{ $pengaduan->created_at->format('d/m/Y H:i') }}</small>
+                    </div>
+
+                    {{-- Opsional: Tombol Hapus Pesan --}}
+                    {{-- 
+                    <hr>
+                    <form action="#" method="POST" onsubmit="return confirm('Hapus pesan ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                            <i class="bi bi-trash me-1"></i> Tandai Selesai / Hapus
+                        </button>
+                    </form>
+                    --}}
+
                 </div>
             </div>
         </div>
-        @endforeach
-
-        @if($pengaduans->isEmpty())
-            <div class="col-12">
-                <p class="text-center text-muted">Belum ada pengaduan masyarakat.</p>
+        @empty
+        {{-- Pesan jika tidak ada pengaduan --}}
+        <div class="col-12">
+            <div class="alert alert-secondary text-center" role="alert">
+                Belum ada pengaduan atau pesan yang masuk dari publik.
             </div>
-        @endif
+        </div>
+        @endforelse
     </div>
 </div>
 @endsection
