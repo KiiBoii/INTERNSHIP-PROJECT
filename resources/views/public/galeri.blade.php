@@ -3,16 +3,19 @@
 {{-- CSS Kustom (DITAMBAHKAN STYLE SLIDER) --}}
 @push('styles')
 <style>
-    /* === 1. CSS BARU UNTUK SLIDER (DARI BERITA) === */
+    /* === 1. CSS SLIDER (DARI HOME.BLADE.PHP) === */
     .news-slider .carousel-item {
         height: 450px; /* Atur tinggi slider */
         background-color: #555;
     }
+
     .news-slider .carousel-item img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: cover; /* Pastikan gambar mengisi area */
     }
+
+    /* Overlay gradient gelap agar teks terbaca */
     .news-slider .carousel-item::after {
         content: '';
         position: absolute;
@@ -22,14 +25,16 @@
         height: 100%;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 25%, rgba(0,0,0,0) 100%);
     }
+
     .news-slider .carousel-caption {
-        bottom: 0;
+        bottom: 0; /* Posisikan caption di bawah */
         z-index: 10;
-        text-align: left;
+        text-align: left; /* Teks rata kiri */
         padding: 2rem 1.5rem;
-        width: 80%;
-        left: 5%;
+        width: 80%; /* Batasi lebar caption */
+        left: 5%; /* Posisikan caption agak ke tengah */
     }
+
     .news-slider .carousel-caption h5 {
         font-size: 2rem;
         font-weight: 700;
@@ -41,32 +46,35 @@
     }
     /* === AKHIR CSS SLIDER === */
 
-    /* 2. Style untuk filter sidebar (Tidak berubah) */
+    /* 2. Style untuk filter sidebar (List) */
     .filter-sidebar .list-group-item {
         border: none;
         padding: 0.75rem 0;
         border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        /* Hapus style link, ini adalah tombol */
+        background-color: transparent; 
+        text-align: left;
+        width: 100%;
     }
     .filter-sidebar .list-group-item:last-child {
         border-bottom: none;
     }
-    .filter-sidebar .list-group-item a {
-        text-decoration: none;
+    .filter-sidebar .list-group-item {
         transition: all 0.2s ease;
         font-weight: 500;
-    }
-    .filter-sidebar .list-group-item a.active {
-        color: var(--primary-color);
-        font-weight: 700;
-    }
-    .filter-sidebar .list-group-item a:not(.active) {
         color: #212529;
     }
-    .filter-sidebar .list-group-item a:not(.active):hover {
+    .filter-sidebar .list-group-item.active {
+        color: var(--primary-color);
+        font-weight: 700;
+        border-right: 3px solid var(--primary-color);
+    }
+    .filter-sidebar .list-group-item:not(.active):hover {
         color: var(--primary-color);
     }
 
-    /* 2. Style "HOT NEWS" (dari berita.blade.php) */
+    /* 3. Style Kartu Galeri (dari "HOT NEWS") */
     .card-news-hover {
         position: relative;
         overflow: hidden;
@@ -74,16 +82,15 @@
         border-radius: 12px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         background-color: #e0e0e0;
+        margin-bottom: 1rem; /* Jarak untuk masonry */
     }
 
-    /* === PENTING UNTUK MASONRY === */
     .card-news-hover .card-img-top {
         transition: transform 0.4s ease;
         width: 100%;
-        height: auto; /* Biarkan tinggi gambar otomatis agar asimetris */
+        height: auto; 
         object-fit: cover;
     }
-    /* === AKHIR PERUBAHAN === */
 
     .card-news-hover:hover .card-img-top {
         transform: scale(1.05);
@@ -137,19 +144,21 @@
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
-    /* === 3. CSS BARU UNTUK MASONRY GRID === */
-    /* Menghapus padding 'g-4' dari .row agar Masonry bisa mengatur margin */
+    /* 4. CSS UNTUK ISOTOPE GRID */
     .gallery-grid-row {
-        margin-left: -1rem;
-        margin-right: -1rem;
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
     }
-
     .grid-item {
         width: 33.333%; /* 3 kolom */
-        padding: 1rem; /* Jarak antar gambar */
+        padding: 0.5rem; 
+        
+        /* Transisi CSS dihapus, diatur oleh JS Isotope */
+    }
+    .grid-item .card-news-hover {
+        margin-bottom: 0; 
     }
 
-    /* Penyesuaian untuk layar lebih kecil */
     @media (max-width: 991.98px) {
         .grid-item {
             width: 50%; /* 2 kolom di tablet */
@@ -160,19 +169,18 @@
             width: 100%; /* 1 kolom di mobile */
         }
     }
-    /* === AKHIR CSS MASONRY === */
 </style>
 @endpush
 
 @section('content')
 
-<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
+<!-- 1. Header Halaman (Slider) -->
 <div class="container my-5">
 
+    {{-- Slider ini sekarang akan menggunakan style .news-slider --}}
     <div id="gallerySlider" class="carousel slide mb-5 news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
         <div class="carousel-indicators">
-            {{-- Loop sebanyak 6 item (atau kurang jika tidak ada) --}}
             @foreach($galeris->take(6) as $foto_slide)
                 <button type="button" data-bs-target="#gallerySlider" data-bs-slide-to="{{ $loop->index }}" 
                         class="@if($loop->first) active @endif" 
@@ -183,7 +191,6 @@
         </div>
 
         <div class="carousel-inner">
-            {{-- Loop 6 foto pertama dari galeri --}}
             @forelse($galeris->take(6) as $foto_slide)
             <div class="carousel-item @if($loop->first) active @endif">
                 <img src="{{ $foto_slide->foto_path ? asset('storage/' . $foto_slide->foto_path) : 'https://placehold.co/1200x450/e0e0e0/999?text=Galeri' }}" class="d-block w-100" alt="{{ $foto_slide->judul_kegiatan }}">
@@ -192,12 +199,10 @@
                     <a href="#" class="text-decoration-none text-white stretched-link">
                         <h5>{{ $foto_slide->judul_kegiatan }}</h5>
                     </a>
-                    {{-- Menampilkan nama bidang di slider --}}
                     <p>{{ $foto_slide->bidang }}</p>
                 </div>
             </div>
             @empty
-            <!-- Fallback jika tidak ada foto sama sekali -->
             <div class="carousel-item active">
                 <img src="https://placehold.co/1200x450/17a2b8/white?text=Galeri+Kegiatan" class="d-block w-100" alt="Placeholder">
                 <div class="carousel-caption d-none d-md-block">
@@ -222,78 +227,71 @@
     <!-- 2. Konten Galeri (Layout Diperbarui dengan Filter List) -->
     <div class="row">
 
-        <!-- A. Sidebar Filter (Kiri) - Tidak berubah -->
+        <!-- A. Sidebar Filter (Kiri) - DIPERBARUI MENJADI BUTTON -->
         <div class="col-lg-3">
-            <div class="card shadow-sm border-0" style="border-radius: 12px; top: 100px;">
+            {{-- 
+                ===== PERUBAHAN DI SINI =====
+                Menghapus style="top: 100px;" agar sidebar tidak menabrak footer
+                jika konten galeri di sebelah kanan terlalu sedikit.
+            --}}
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-body p-4 filter-sidebar">
                     <h5 class="fw-bold mb-3" style="color: var(--dark-blue);">Filter Bidang</h5>
                     
-                    <ul class="list-group list-group-flush">
+                    <div class="list-group list-group-flush" id="gallery-filter-buttons">
                         
-                        <li class="list-group-item">
-                            <a href="{{ route('public.galeri') }}" 
-                               class="d-flex justify-content-between align-items-center {{ !request('bidang') ? 'active' : '' }}">
-                                <span>Seluruh Kegiatan Bidang</span>
-                                @if(!request('bidang'))
-                                    <i class="bi bi-check text-primary"></i>
-                                @endif
-                            </a>
-                        </li>
+                        <button type="button" class="list-group-item list-group-item-action active" data-filter="*">
+                            Seluruh Kegiatan Bidang
+                        </button>
 
                         @foreach($bidangList as $bidang)
-                        <li class="list-group-item">
-                            <a href="{{ route('public.galeri', ['bidang' => $bidang]) }}" 
-                               class="d-flex justify-content-between align-items-center {{ request('bidang') == $bidang ? 'active' : '' }}">
-                                <span>{{ $bidang }}</span>
-                                @if(request('bidang') == $bidang)
-                                    <i class="bi bi-check text-primary"></i>
-                                @endif
-                            </a>
-                        </li>
+                            @php $slug = Str::slug($bidang); @endphp
+                            
+                            <button type="button" class="list-group-item list-group-item-action" data-filter=".{{ $slug }}">
+                                {{ $bidang }}
+                            </button>
                         @endforeach
                         
                         @if($bidangList->isEmpty())
-                            <li class="list-group-item"><a href="#" class="text-dark">Bidang Aptika</a></li>
-                            <li class="list-group-item"><a href="#" class="text-dark">Bidang IKP</a></li>
-                            <li class="list-group-item"><a href="#" class="text-dark">Bidang Statistik</a></li>
+                            <button type="button" class="list-group-item list-group-item-action" data-filter=".bidang-aptika">Bidang Aptika</button>
+                            <button type="button" class="list-group-item list-group-item-action" data-filter=".bidang-ikp">Bidang IKP</button>
                         @endif
 
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- B. Grid Galeri (Kanan) - DIPERBARUI DENGAN MASONRY -->
+        <!-- B. Grid Galeri (Kanan) - DIPERBARUI DENGAN ISOTOPE -->
         <div class="col-lg-9">
             <h2 class="section-title">
-                {{ request('bidang') ?? 'Semua Kegiatan' }}
+                Semua Kegiatan
             </h2>
             
-            <div class="row gallery-grid-row" data-masonry='{"percentPosition": true, "itemSelector": ".grid-item"}'>
+            <div class="row gallery-grid-row" id="gallery-grid">
                 
                 @forelse($galeris as $foto)
-                {{-- 4. Mengubah 'col' menjadi 'grid-item' dengan class kolom spesifik --}}
-                <div class="grid-item col-sm-6 col-md-4">
-                    {{-- 5. Menghapus 'h-100' agar tinggi kartu bisa dinamis --}}
-                    <div class="card card-news-hover"> 
-                        @if($foto->foto_path)
-                            {{-- 6. Menghapus 'style="height: 250px;"' agar tinggi gambar otomatis --}}
-                            <img src="{{ asset('storage/' . $foto->foto_path) }}" class="card-img-top" alt="{{ $foto->judul_kegiatan }}">
-                        @else
-                            <img src="https://placehold.co/300x250/e0e0e0/999?text=Foto" class="card-img-top" alt="Placeholder">
-                        @endif
-                        
-                        @if($foto->bidang)
-                            <span class="gallery-bidang-badge">{{ $foto->bidang }}</span>
-                        @endif
+                    @php $slug = Str::slug($foto->bidang); @endphp
 
-                        <a href="#" class="stretched-link"></a>
+                    <div class="grid-item {{ $slug }}">
+                        <div class="card card-news-hover"> 
+                            @if($foto->foto_path)
+                                <img src="{{ asset('storage/' . $foto->foto_path) }}" class="card-img-top" alt="{{ $foto->judul_kegiatan }}">
+                            @else
+                                <img src="https://placehold.co/300x250/e0e0e0/999?text=Foto" class="card-img-top" alt="Placeholder">
+                            @endif
+                            
+                            @if($foto->bidang)
+                                <span class="gallery-bidang-badge">{{ $foto->bidang }}</span>
+                            @endif
 
-                        <div class="card-hover-caption">
-                            <h6>{{ $foto->judul_kegiatan }}</h6>
+                            <a href="#" class="stretched-link" aria-label="{{ $foto->judul_kegiatan }}"></a>
+
+                            <div class="card-hover-caption">
+                                <h6>{{ $foto->judul_kegiatan }}</h6>
+                            </div>
                         </div>
                     </div>
-                </div>
                 @empty
                 <div class="col-12">
                     <div class="alert alert-secondary text-center">
@@ -303,10 +301,7 @@
                 @endforelse
             </div>
 
-            <!-- Paginasi -->
-            <div class="d-flex justify-content-center mt-4">
-                {!! $galeris->appends(request()->query())->links() !!}
-            </div>
+            <!-- Paginasi TELAH DIHAPUS karena Isotope memuat semua item -->
 
         </div> <!-- Penutup col-lg-9 -->
 
@@ -315,8 +310,95 @@
 
 @endsection
 
-{{-- JavaScript untuk Masonry --}}
+{{-- JavaScript untuk ISOTOPE --}}
 @push('scripts')
-{{-- 1. Load library Masonry.js dari CDN --}}
-<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" xintegrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+dOCLsfzmy4GzBWoLkmMGVwRkmRNmFisOMFacPgyC" crossorigin="anonymous" async></script>
+{{-- 1. Load library Isotope.js (sudah termasuk Masonry) --}}
+<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+
+{{-- 2. Script inisialisasi --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        var grid = document.getElementById('gallery-grid');
+        var iso;
+
+        var images = grid.querySelectorAll('img');
+        var loadedImages = 0;
+        var totalImages = images.length;
+
+        function initIsotope() {
+            iso = new Isotope(grid, {
+                itemSelector: '.grid-item',
+                layoutMode: 'masonry',
+                percentPosition: true,
+                masonry: {
+                    columnWidth: '.grid-item'
+                },
+                
+                /* * === PERBAIKAN ANIMASI ===
+                 * Kita tentukan durasi, dan style hidden/visible
+                 * Ini akan menggantikan transisi CSS
+                */
+                transitionDuration: '0.6s', // Durasi untuk perpindahan DAN fade
+                
+                // Style saat item disembunyikan
+                hiddenStyle: {
+                    opacity: 0,
+                    transform: 'scale(0.8)'
+                },
+                // Style saat item ditampilkan
+                visibleStyle: {
+                    opacity: 1,
+                    transform: 'scale(1)'
+                }
+                /* === AKHIR PERBAIKAN === */
+            });
+        }
+
+        // Cek jika tidak ada gambar, langsung inisialisasi
+        if (totalImages === 0) {
+            initIsotope();
+        } else {
+            // Jika ada gambar, tunggu semua dimuat
+            images.forEach(function(img) {
+                if (img.complete) {
+                    imageLoaded();
+                } else {
+                    img.addEventListener('load', imageLoaded);
+                    img.addEventListener('error', imageLoaded);
+                }
+            });
+        }
+
+        function imageLoaded() {
+            loadedImages++;
+            if (loadedImages === totalImages) {
+                initIsotope(); // Jalankan Isotope setelah semua gambar siap
+            }
+        }
+
+
+        // Logika untuk Tombol Filter
+        var filterButtonGroup = document.getElementById('gallery-filter-buttons');
+        if (filterButtonGroup) {
+            filterButtonGroup.addEventListener('click', function(event) {
+                if (!event.target.matches('button')) {
+                    return;
+                }
+                
+                var filterValue = event.target.getAttribute('data-filter');
+                if (iso) {
+                    iso.arrange({ filter: filterValue }); // Terapkan filter
+                }
+
+                var buttons = filterButtonGroup.querySelectorAll('button');
+                buttons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            });
+        }
+
+    });
+</script>
 @endpush

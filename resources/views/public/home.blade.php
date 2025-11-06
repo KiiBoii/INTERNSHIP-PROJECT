@@ -61,14 +61,14 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://i.pinimg.com/736x/e5/0a/30/e50a30f485ffd1cfd873acc9f9c8c257.jpg" class="d-block w-100" alt="Slider 1">
+                <img src="https://i.pinimg.com/736x/d2/fc/ad/d2fcadc36548012db71d04ab66bd6b43.jpg" class="d-block w-100" alt="Slider 1">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Selamat Datang di Dinas Sosial Riau</h5>
                     <p>Melayani dengan hati, menjangkau seluruh lapisan masyarakat.</p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="https://i.pinimg.com/736x/c7/d1/f8/c7d1f8b48ef926a6c2ebb6602ab0ed87.jpg" class="d-block w-100" alt="Slider 2">
+                <img src="https://i.pinimg.com/1200x/be/1a/cf/be1acffb33510dbc2f81cc894c7abf70.jpg" class="d-block w-100" alt="Slider 2">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Program Bantuan Sosial 2025</h5>
                     <p>Informasi terbaru seputar program bantuan sosial di Provinsi Riau.</p>

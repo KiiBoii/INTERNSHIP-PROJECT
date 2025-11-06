@@ -227,7 +227,7 @@
         <nav class="navbar navbar-expand-lg navbar-main sticky-top">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('public.home') }}">
-                    <img src="https://placehold.co/150x50/e0e0e0/333?text=Logo+Dinsos" alt="Logo Dinas Sosial Riau">
+                    <img src="{{ asset('images/logo_warna.png') }}" alt="Logo Dinas Sosial Riau">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -310,7 +310,11 @@
                 <p class="footer-tagline">
                     "Mewujudkan manajemen penyelenggaraan pemerintahan yang baik (good governance), efektif dan efisien, professional, transparan dan akuntabel."
                 </p>
-                <img src="https://placehold.co/100x100/ffffff/333?text=Logo" alt="Logo Dinsos Riau" class="logo-img rounded-circle">
+                
+                {{-- === BARIS YANG DIPERBARUI === --}}
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Dinsos Riau" class="logo-img rounded-circle">
+                {{-- === AKHIR PERUBAHAN === --}}
+
                 <div class="logo-text">DINAS SOSIAL PROVINSI RIAU</div>
                 
                 <p class="footer-copyright">

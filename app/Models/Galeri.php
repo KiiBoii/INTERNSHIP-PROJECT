@@ -17,5 +17,6 @@ class Galeri extends Model
     protected $fillable = [
         'judul_kegiatan',
         'foto_path',
+        'bidang',
     ];
 }
