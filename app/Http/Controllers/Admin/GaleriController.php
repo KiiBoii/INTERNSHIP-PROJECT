@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Storage; // Untuk mengelola file
 
 class GaleriController extends Controller
 {
+    // Definisikan daftar bidang di satu tempat agar konsisten
+    private $bidangList = [
+        'Bidang Infrastruktur TIK',
+        'Bidang Statistik',
+        'Bidang Aptika',
+        'Bidang IKP',
+        'Bidang Persandian',
+        'Komisi Informasi Riau',
+        'Sekretariat Diskomfotik'
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +34,8 @@ class GaleriController extends Controller
      */
     public function create()
     {
-        return view('admin.galeri.create');
+        // Kirim daftar bidang yang sudah didefinisikan
+        return view('admin.galeri.create', ['bidangList' => $this->bidangList]);
     }
 
     /**
@@ -33,14 +45,15 @@ class GaleriController extends Controller
     {
         $validated = $request->validate([
             'judul_kegiatan' => 'required|string|max:255',
-            'foto_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar wajib saat create
+            'bidang' => 'required|string|max:255', // Validasi bidang
+            'foto_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('foto_path')) {
             $validated['foto_path'] = $request->file('foto_path')->store('galeri_images', 'public');
         }
 
-        Galeri::create($validated);
+        Galeri::create($validated); // 'bidang' akan otomatis tersimpan
 
         return redirect()->route('galeri.index')->with('success', 'Foto kegiatan berhasil ditambahkan.');
     }
@@ -59,7 +72,11 @@ class GaleriController extends Controller
      */
     public function edit(Galeri $galeri)
     {
-        return view('admin.galeri.edit', compact('galeri'));
+        // Kirim daftar bidang dan galeri yang akan diedit
+        return view('admin.galeri.edit', [
+            'galeri' => $galeri,
+            'bidangList' => $this->bidangList
+        ]);
     }
 
     /**
@@ -69,17 +86,20 @@ class GaleriController extends Controller
     {
         $validated = $request->validate([
             'judul_kegiatan' => 'required|string|max:255',
-            'foto_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar boleh kosong saat update
+            'bidang' => 'required|string|max:255', // Validasi bidang
+            'foto_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('foto_path')) {
+            // Hapus foto lama jika ada
             if ($galeri->foto_path) {
                 Storage::disk('public')->delete($galeri->foto_path);
             }
+            // Simpan foto baru
             $validated['foto_path'] = $request->file('foto_path')->store('galeri_images', 'public');
         }
 
-        $galeri->update($validated);
+        $galeri->update($validated); // 'bidang' akan otomatis ter-update
 
         return redirect()->route('galeri.index')->with('success', 'Foto kegiatan berhasil diperbarui.');
     }

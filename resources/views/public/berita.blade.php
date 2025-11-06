@@ -263,7 +263,7 @@
                                     <div class="card-hover-caption">
                                         <h6>{{ $hot->judul }}</h6>
                                     </div>
-                                D</div>
+                                </div>
                             @else
                                 <div class="card-placeholder"><span>Berita 5</span></div>
                             @endif
