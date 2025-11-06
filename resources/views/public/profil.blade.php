@@ -1,9 +1,9 @@
 @extends('layouts.public')
 
-{{-- 1. CSS KUSTOM DITAMBAHKAN (SAMA SEPERTI HALAMAN BERITA) --}}
+{{-- 1. CSS KUSTOM DITAMBAHKAN (SAMA SEPERTI HALAMAN HOME/BERITA) --}}
 @push('styles')
 <style>
-    /* Mengambil style dari halaman berita agar sama persis */
+    /* Mengambil style dari halaman berita/home agar sama persis */
     .news-slider .carousel-item {
         height: 450px; /* Atur tinggi slider */
         background-color: #555;
@@ -52,24 +52,45 @@
 
 @section('content')
 
+<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
 <div class="container my-5">
     
-    <div id="profilHeader" class="news-slider" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+    {{-- Slider ini tidak auto-scroll karena hanya 1 item --}}
+    <div id="profilHeader" class="carousel slide news-slider" data-bs-ride="false"
+         style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
-        {{-- Div ini meniru struktur 'carousel-item' --}}
-        <div class="carousel-item active"> 
-            
-            <img src="https://placehold.co/1920x500/333/fff?text=Tentang+Kami" class="d-block w-100" alt="Profil Header">
-            
-            {{-- Div ini meniru struktur 'carousel-caption' --}}
-            <div class="carousel-caption d-none d-md-block">
-                <h1 class="text-white">PROFIL</h1> {{-- Menggunakan H1 untuk SEO --}}
-                <p class="text-white-50">Visi, Misi, dan Struktur Organisasi Dinas Sosial Provinsi Riau.</p>
+        {{-- Indikator di-disable karena hanya 1 slide --}}
+        {{-- <div class="carousel-indicators">
+            <button type="button" data-bs-target="#profilHeader" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        </div> --}}
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://placehold.co/1920x500/333/fff?text=Tentang+Kami" class="d-block w-100" alt="Profil Header">
+                
+                <div class="carousel-caption d-none d-md-block">
+                    <h1 class="text-white">PROFIL</h1> {{-- Menggunakan H1 untuk SEO --}}
+                    <p class="text-white-50">Visi, Misi, dan Struktur Organisasi Dinas Sosial Provinsi Riau.</p>
+                </div>
             </div>
         </div>
+        
+        {{-- Tombol Navigasi di-disable karena hanya 1 slide --}}
+        {{-- <button class="carousel-control-prev" type="button" data-bs-target="#profilHeader" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#profilHeader" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button> --}}
     </div>
 
-</div> <div class="container my-5">
+</div> <!-- Penutup container slider -->
+
+
+<!-- 2. Konten Sejarah (Sesuai PROFIL.jpg) -->
+<div class="container my-5">
     <div class="row align-items-center">
         <div class="col-lg-7">
             <small class="text-primary fw-bold text-uppercase">Tentang Kami</small>
@@ -95,6 +116,7 @@
     </div>
 </div>
 
+<!-- 3. Visi & Misi (Sesuai PROFIL.jpg) -->
 <div class="py-5" style="background-color: #ffffff;">
     <div class="container">
         <h2 class="section-title">Visi dan Misi</h2>
@@ -126,6 +148,7 @@
     </div>
 </div>
 
+<!-- 4. Struktur Organisasi (Sesuai PROFIL.jpg) -->
 <div class="container my-5">
     <h2 class="section-title">Struktur Organisasi</h2>
     <div class="text-center">

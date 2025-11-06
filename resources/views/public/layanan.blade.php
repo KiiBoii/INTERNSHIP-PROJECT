@@ -1,16 +1,94 @@
 @extends('layouts.public')
 
+{{-- 1. CSS KUSTOM DITAMBAHKAN UNTUK SLIDER --}}
+@push('styles')
+<style>
+    /* Mengambil style dari halaman berita/home agar sama persis */
+    .news-slider .carousel-item {
+        height: 450px; /* Atur tinggi slider */
+        background-color: #555;
+    }
+
+    .news-slider .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Pastikan gambar mengisi area */
+    }
+
+    /* Overlay gradient gelap agar teks terbaca */
+    .news-slider .carousel-item::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0) 80%);
+    }
+
+    .news-slider .carousel-caption {
+        bottom: 0;
+        z-index: 10;
+        text-align: left;
+        padding: 2rem 1.5rem;
+        width: 80%; 
+        left: 5%; 
+    }
+
+    .news-slider .carousel-caption h5 {
+        font-size: 2rem; 
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .news-slider .carousel-caption p {
+        font-size: 1rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+</style>
+@endpush
+
 @section('content')
 
-<!-- 1. Header Halaman (Sesuai LAYANAN PUBLIK.jpg) -->
-<div class="container-fluid" style="background: url('https://placehold.co/1920x400/6610f2/white?text=Layanan+Publik') center center; background-size: cover;">
-    <div class="row align-items-center" style="min-height: 300px; background-color: rgba(0, 0, 0, 0.4);">
-        <div class="col-12 text-center">
-            <h1 class="display-3 fw-bold text-white">LAYANAN</h1>
-            <p class="lead text-white-50">Informasi layanan, pusat bantuan, dan formulir pengaduan masyarakat.</p>
+<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
+<div class="container my-5">
+    
+    <div id="heroSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" 
+         style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+        
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="1" aria-label="Slide 2"></button>
         </div>
+        <div class="carousel-inner">
+            {{-- Ini adalah placeholder slider dari home.blade.php --}}
+            {{-- Idealnya, Anda mengirim data dinamis dari PageController@layanan --}}
+            <div class="carousel-item active">
+                <img src="https://placehold.co/1920x600/6610f2/white?text=Layanan+Publik" class="d-block w-100" alt="Slider 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>LAYANAN PUBLIK</h5>
+                    <p>Informasi layanan, pusat bantuan, dan formulir pengaduan.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://placehold.co/1920x600/007bff/white?text=Program+Bantuan+Sosial" class="d-block w-100" alt="Slider 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Program Bantuan Sosial</h5>
+                    <p>Informasi terbaru seputar program bantuan sosial di Provinsi Riau.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroSlider" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroSlider" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
-</div>
+
+</div> <!-- Penutup container slider -->
+
 
 <!-- 2. Konten Layanan (Sesuai LAYANAN PUBLIK.jpg) -->
 <div class="container my-5">
@@ -105,4 +183,3 @@
 </div>
 
 @endsection
-

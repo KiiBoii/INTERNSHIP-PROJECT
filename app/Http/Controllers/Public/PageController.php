@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; // <-- DIPERLUKAN UNTUK FILTER
 use App\Models\Berita;
 use App\Models\Galeri;
 use App\Models\Pengumuman;
-use App\Models\Kontak; // <-- 1. Tambahkan Model Kontak
+use App\Models\Kontak;
 
 class PageController extends Controller
 {
@@ -52,8 +52,8 @@ class PageController extends Controller
 
         // Ambil berita lainnya (selain hot news) dengan paginasi (9 per halaman)
         $beritas = Berita::whereNotIn('id', $hot_news_ids)
-                        ->latest()
-                        ->paginate(9);
+                            ->latest()
+                            ->paginate(9);
 
         // PERBAIKAN: Ambil 5 topik/berita lainnya secara acak,
         // yang juga BUKAN bagian dari $hot_news atau $beritas di halaman ini.
@@ -70,11 +70,29 @@ class PageController extends Controller
 
     /**
      * Halaman Galeri
+     * === BAGIAN INI DIPERBARUI UNTUK FILTER DROPDOWN ===
      */
-    public function galeri()
+    public function galeri(Request $request) // 1. Tambahkan Request $request
     {
-        $galeris = Galeri::latest()->paginate(12); // 12 foto per halaman
-        return view('public.galeri', compact('galeris'));
+        // 2. Ambil daftar bidang unik dari database
+        $bidangList = Galeri::whereNotNull('bidang')
+                            ->where('bidang', '!=', '')
+                            ->distinct()
+                            ->pluck('bidang');
+
+        // 3. Buat query galeri
+        $query = Galeri::query();
+
+        // 4. Terapkan filter jika ada
+        if ($request->has('bidang') && $request->bidang != '') {
+            $query->where('bidang', $request->bidang);
+        }
+
+        // 5. Ambil hasil dengan paginasi (dan sertakan query string)
+        $galeris = $query->latest()->paginate(12)->withQueryString(); 
+
+        // 6. Kirim data ke view
+        return view('public.galeri', compact('galeris', 'bidangList'));
     }
 
     /**
@@ -103,7 +121,6 @@ class PageController extends Controller
     }
 
     /**
-     * 2. TAMBAHKAN METHOD BARU INI
      * Method untuk MENYIMPAN data dari form kontak
      */
     public function storeKontak(Request $request)
@@ -121,9 +138,9 @@ class PageController extends Controller
         // Kembalikan ke halaman kontak dengan pesan sukses
         return redirect()->route('public.kontak')->with('success', 'Pesan Anda telah berhasil terkirim. Terima kasih!');
     }
+    
     /**
      * Halaman Detail Berita
-     * (Method BARU yang Anda tambahkan)
      */
     public function showBerita($id)
     {
@@ -132,10 +149,10 @@ class PageController extends Controller
 
         // 2. Ambil berita terkait (misal: 3 berita terbaru, BUKAN yg sedang dibaca)
         $related_news = Berita::where('id', '!=', $id) // <-- Kecualikan berita ini
-                                    ->latest()
-                                    ->take(3)
-                                    ->get();
-                                    
+                                        ->latest()
+                                        ->take(3)
+                                        ->get();
+                                        
         // 3. Kirim data ke view detail
         return view('public.berita_detail', compact('berita', 'related_news'));
     }
@@ -143,5 +160,3 @@ class PageController extends Controller
 
     
 }
-
-

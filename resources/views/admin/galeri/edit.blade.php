@@ -25,6 +25,35 @@
                     <input type="text" class="form-control" id="judul_kegiatan" name="judul_kegiatan" value="{{ old('judul_kegiatan', $galeri->judul_kegiatan) }}" required>
                 </div>
 
+                {{-- === BLOK BARU UNTUK BIDANG === --}}
+                <div class="mb-3">
+                    <label for="bidang" class="form-label">Bidang Terkait</label>
+                    <select class="form-select" id="bidang" name="bidang" required>
+                        <option value="" disabled>-- Pilih Bidang --</option>
+                        
+                        {{-- Variabel $bidangList ini dikirim dari GaleriController@edit --}}
+                        @forelse($bidangList ?? [] as $bidang)
+                            {{-- 
+                                Ini akan otomatis memilih bidang yang sudah tersimpan di $galeri->bidang,
+                                atau menggunakan old('bidang') jika ada error validasi.
+                            --}}
+                            <option value="{{ $bidang }}" {{ old('bidang', $galeri->bidang) == $bidang ? 'selected' : '' }}>
+                                {{ $bidang }}
+                            </option>
+                        @empty
+                            {{-- Fallback jika $bidangList tidak terkirim dari controller --}}
+                            <option value="Bidang Infrastruktur TIK">Bidang Infrastruktur TIK</option>
+                            <option value="Bidang Statistik">Bidang Statistik</option>
+                            <option value="Bidang Aptika">Bidang Aptika</option>
+                            <option value="Bidang IKP">Bidang IKP</option>
+                            <option value="Bidang Persandian">Bidang Persandian</option>
+                            <option value="Komisi Informasi Riau">Komisi Informasi Riau</option>
+                            <option value="Sekretariat Diskomfotik">Sekretariat Diskomfotik</option>
+                        @endforelse
+                    </select>
+                </div>
+                {{-- === AKHIR BLOK BARU === --}}
+
                 <div class="mb-3">
                     <label for="foto_path" class="form-label">Ganti Foto (Biarkan kosong jika tidak ingin mengubah)</label>
                     <input type="file" class="form-control" id="foto_path" name="foto_path" accept="image/*">
