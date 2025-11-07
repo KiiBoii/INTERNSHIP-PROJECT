@@ -26,6 +26,7 @@ class Pengumuman extends Model
         'judul',
         'isi',
         'user_id',
+        'gambar',
     ];
         public function user()
     {

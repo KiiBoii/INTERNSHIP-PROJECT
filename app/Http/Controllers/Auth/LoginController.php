@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider; // Penting
+use App\Providers\RouteServiceProvider; // <-- INI ADALAH PERBAIKANNYA
 
 class LoginController extends Controller
 {
@@ -22,14 +22,16 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        // 1. Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 2. Coba autentikasi
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        // === PERUBAHAN DI SINI ===
+        // 2. Coba autentikasi (parameter 'remember' dihapus)
+        // Ini memastikan session akan hangus saat browser ditutup
+        // (sesuai pengaturan SESSION_EXPIRE_ON_CLOSE=true di .env)
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
             // 3. Pengecekan Role dan Redirect
@@ -37,6 +39,7 @@ class LoginController extends Controller
 
             if ($user->role === 'admin') {
                 // Arahkan 'admin' ke dashboard utama
+                // Baris ini (baris 40) sekarang akan berfungsi
                 return redirect()->intended(RouteServiceProvider::HOME_ADMIN);
             }
 
@@ -45,7 +48,7 @@ class LoginController extends Controller
                 return redirect()->intended(RouteServiceProvider::HOME_BERITA);
             }
 
-            // Fallback jika role tidak dikenal
+            // Fallback jika role tidak dikenal (seharusnya tidak terjadi)
             return redirect()->intended('/');
         }
 

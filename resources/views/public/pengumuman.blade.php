@@ -55,48 +55,100 @@
 <!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
 <div class="container my-5">
     
-    {{-- Slider ini tidak auto-scroll karena hanya 1 item --}}
-    <div id="pengumumanHeader" class="carousel slide news-slider" data-bs-ride="false"
+    <div id="pengumumanSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000"
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
+        <div class="carousel-indicators">
+            @foreach($pengumumans->take(3) as $item) {{-- Ambil 3 untuk slider --}}
+                <button type="button" data-bs-target="#pengumumanSlider" data-bs-slide-to="{{ $loop->index }}" 
+                        class="@if($loop->first) active @endif" 
+                        aria-current="@if($loop->first) true @endif" 
+                        aria-label="Slide {{ $loop->iteration }}">
+                </button>
+            @endforeach
+        </div>
+
         <div class="carousel-inner">
+            @forelse($pengumumans->take(3) as $item) {{-- Loop 3 pengumuman pertama --}}
+            <div class="carousel-item @if($loop->first) active @endif">
+                {{-- Gunakan gambar pengumuman jika ada, jika tidak, gunakan placeholder --}}
+                <img src="{{ $item->gambar ? asset('storage/' . $item->gambar) : 'https://placehold.co/1920x400/ffc107/333?text=Pengumuman' }}" class="d-block w-100" alt="{{ $item->judul }}">
+                
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ $item->judul }}</h5>
+                    <p>{{ Str::limit(strip_tags($item->isi), 150) }}</p>
+                </div>
+            </div>
+            @empty
+            {{-- Fallback jika tidak ada pengumuman sama sekali --}}
             <div class="carousel-item active">
                 <img src="https://placehold.co/1920x400/ffc107/333?text=Pengumuman" class="d-block w-100" alt="Pengumuman Header">
-                
                 <div class="carousel-caption d-none d-md-block">
                     <h1 class="text-white">PENGUMUMAN</h1>
                     <p class="text-white-50">Informasi penting dan pengumuman resmi dari Dinas Sosial Provinsi Riau.</p>
                 </div>
             </div>
+            @endforelse
         </div>
+
+        {{-- Hanya tampilkan tombol navigasi jika ada lebih dari 1 pengumuman --}}
+        @if($pengumumans->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#pengumumanSlider" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#pengumumanSlider" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        @endif
         
     </div>
 
 </div> <!-- Penutup container slider -->
 
 
-<!-- 2. Konten Pengumuman -->
+<!-- 2. Konten Pengumuman (DIPERBARUI) -->
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-lg-9">
+        {{-- Diubah ke col-lg-10 agar lebih lebar untuk 2 kolom --}}
+        <div class="col-lg-10">
             <h2 class="section-title">Daftar Pengumuman</h2>
             
-            @forelse($pengumumans as $item)
-            <div class="card card-news mb-4">
-                <div class="card-body p-4">
-                    <h4 class="card-title fw-bold">{{ $item->judul }}</h4>
-                    <p class="card-date text-muted"><i class="bi bi-calendar3 me-2"></i>Diposting pada: {{ $item->created_at->format('d F Y') }}</p>
-                    <hr>
-                    <div class="card-text">
-                        {!! nl2br(e($item->isi)) !!} {{-- nl2br untuk menghargai baris baru, e() untuk keamanan --}}
+            {{-- Tambahkan row baru untuk grid --}}
+            <div class="row">
+                @forelse($pengumumans as $item)
+                
+                {{-- Bungkus setiap card dengan col-md-6 --}}
+                <div class="col-md-6 mb-4">
+                    <div class="card card-news h-100"> {{-- Tambahkan h-100 --}}
+                        <div class="card-body p-4">
+                            
+                            {{-- Tampilkan Gambar di sini jika ada --}}
+                            @if($item->gambar)
+                                <img src="{{ asset('storage/' . $item->gambar) }}" class="img-fluid rounded mb-3" alt="{{ $item->judul }}" style="width: 100%; height: 300px; object-fit: cover;">
+                            @endif
+
+                            <h4 class="card-title fw-bold">{{ $item->judul }}</h4>
+                            <p class="card-date text-muted"><i class="bi bi-calendar3 me-2"></i>Diposting pada: {{ $item->created_at->format('d F Y') }}</p>
+                            <hr>
+                            
+                            {{-- Tampilkan isi dari Summernote (menggunakan {!! !!}) --}}
+                            <div class="card-text article-content">
+                                {!! $item->isi !!} 
+                            </div>
+
+                        </div>
                     </div>
                 </div>
+                @empty
+                <div class="col-12">
+                    <div class="alert alert-secondary text-center">
+                        Belum ada pengumuman terbaru.
+                    </div>
+                </div>
+                @endforelse
             </div>
-            @empty
-            <div class="alert alert-secondary text-center">
-                Belum ada pengumuman terbaru.
-            </div>
-            @endforelse
 
             <!-- Paginasi -->
             <div class="d-flex justify-content-center mt-4">

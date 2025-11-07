@@ -1,5 +1,18 @@
 @extends('layouts.admin')
 
+{{-- 1. Tambahkan CSS untuk Summernote --}}
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs5.min.css" rel="stylesheet">
+    <style>
+        .note-editor.note-frame {
+            border-radius: 0.375rem;
+        }
+        .note-editable {
+            min-height: 250px;
+        }
+    </style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <h3 class="mb-4">Edit Berita: "{{ $berita->judul }}"</h3>
@@ -25,9 +38,10 @@
                     <input type="text" class="form-control" id="judul" name="judul" value="{{ old('judul', $berita->judul) }}" required>
                 </div>
 
+                {{-- 2. UBAH ID TEXTAREA MENJADI 'summernote' --}}
                 <div class="mb-3">
-                    <label for="isi" class="form-label">Isi Berita</label>
-                    <textarea class="form-control" id="isi" name="isi" rows="8" required>{{ old('isi', $berita->isi) }}</textarea>
+                    <label for="summernote" class="form-label">Isi Berita</label>
+                    <textarea class="form-control" id="summernote" name="isi" rows="8" required>{{ old('isi', $berita->isi) }}</textarea>
                 </div>
 
                 <div class="mb-3">
@@ -49,3 +63,30 @@
     </div>
 </div>
 @endsection
+
+{{-- 3. Tambahkan Script untuk Summernote --}}
+@push('scripts')
+    {{-- Summernote memerlukan jQuery --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi Summernote
+            $('#summernote').summernote({
+                placeholder: 'Tulis isi berita lengkap di sini...',
+                tabsize: 2,
+                height: 250,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+@endpush
