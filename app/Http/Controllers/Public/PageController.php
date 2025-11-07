@@ -8,6 +8,7 @@ use App\Models\Berita;
 use App\Models\Galeri;
 use App\Models\Pengumuman;
 use App\Models\Kontak;
+use Illuminate\Support\Facades\Storage; // <-- 1. TAMBAHKAN INI
 
 class PageController extends Controller
 {
@@ -16,16 +17,13 @@ class PageController extends Controller
      */
     public function home()
     {
-        // --- PERBAIKAN LOGIKA ---
-        // 1. Ambil 6 berita terbaru
-        $semuaBeritaBaru = Berita::latest()->take(6)->get();
+        // 1. Ambil 6 berita terbaru (Eager load relasi user)
+        $semuaBeritaBaru = Berita::with('user')->latest()->take(6)->get();
 
         // 2. Ambil 1 berita pertama sebagai Berita Utama
-        //    (first() akan mengembalikan null jika koleksi kosong, ini aman)
         $beritaUtama = $semuaBeritaBaru->first();
 
         // 3. Ambil 5 berita sisanya (skip 1) sebagai Berita Lainnya
-        //    (slice(1) akan mengembalikan koleksi kosong jika item kurang dari 2, ini aman)
         $beritaLainnya = $semuaBeritaBaru->slice(1);
         
         return view('public.home', compact('beritaUtama', 'beritaLainnya'));
@@ -44,19 +42,18 @@ class PageController extends Controller
      */
     public function berita()
     {
-        // Ambil 6 berita terbaru untuk "Hot News"
-        $hot_news = Berita::latest()->take(6)->get();
+        // Ambil 6 berita terbaru untuk "Hot News" (Eager load user)
+        $hot_news = Berita::with('user')->latest()->take(6)->get();
 
         // Ambil ID dari hot_news
         $hot_news_ids = $hot_news->pluck('id');
 
         // Ambil berita lainnya (selain hot news) dengan paginasi (9 per halaman)
-        $beritas = Berita::whereNotIn('id', $hot_news_ids)
-                            ->latest()
-                            ->paginate(9);
+        $beritas = Berita::with('user')->whereNotIn('id', $hot_news_ids)
+                                ->latest()
+                                ->paginate(9);
 
-        // PERBAIKAN: Ambil 5 topik/berita lainnya secara acak,
-        // yang juga BUKAN bagian dari $hot_news atau $beritas di halaman ini.
+        // Ambil 5 topik/berita lainnya secara acak
         $beritas_ids = $beritas->pluck('id');
         $exclude_ids = $hot_news_ids->merge($beritas_ids);
 
@@ -70,28 +67,28 @@ class PageController extends Controller
 
     /**
      * Halaman Galeri
-     * === BAGIAN INI DIPERBARUI UNTUK FILTER DROPDOWN ===
+     * === BAGIAN INI DIPERBARUI UNTUK FILTER ISOTOPE ===
      */
-    public function galeri(Request $request) // 1. Tambahkan Request $request
+    public function galeri(Request $request)
     {
-        // 2. Ambil daftar bidang unik dari database
+        // 1. Ambil daftar bidang unik dari database
         $bidangList = Galeri::whereNotNull('bidang')
                             ->where('bidang', '!=', '')
                             ->distinct()
                             ->pluck('bidang');
 
-        // 3. Buat query galeri
-        $query = Galeri::query();
+        // 2. Buat query galeri (sudah termasuk relasi user)
+        $query = Galeri::with('user');
 
-        // 4. Terapkan filter jika ada
+        // 3. Terapkan filter jika ada (meskipun Isotope akan menanganinya di frontend)
         if ($request->has('bidang') && $request->bidang != '') {
             $query->where('bidang', $request->bidang);
         }
 
-        // 5. Ambil hasil dengan paginasi (dan sertakan query string)
-        $galeris = $query->latest()->paginate(12)->withQueryString(); 
+        // 4. Ambil SEMUA hasil (get()) untuk Isotope, BUKAN paginate()
+        $galeris = $query->latest()->get(); 
 
-        // 6. Kirim data ke view
+        // 5. Kirim data ke view
         return view('public.galeri', compact('galeris', 'bidangList'));
     }
 
@@ -108,7 +105,8 @@ class PageController extends Controller
      */
     public function pengumuman()
     {
-        $pengumumans = Pengumuman::latest()->paginate(10); // 10 pengumuman per halaman
+        // 5. PERBARUI: Tambahkan with('user') untuk mengambil nama penulis
+        $pengumumans = Pengumuman::with('user')->latest()->paginate(10);
         return view('public.pengumuman', compact('pengumumans'));
     }
 
@@ -122,21 +120,29 @@ class PageController extends Controller
 
     /**
      * Method untuk MENYIMPAN data dari form kontak
+     * === BAGIAN INI DIPERBARUI UNTUK PENGADUAN LENGKAP ===
      */
     public function storeKontak(Request $request)
     {
-        // Validasi data
+        // 6. Validasi data (menambahkan no_hp dan foto_pengaduan)
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'no_hp' => 'nullable|string|max:20', // Validasi No HP
             'isi_pengaduan' => 'required|string',
+            'foto_pengaduan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi Foto
         ]);
+
+        // 7. Logic untuk upload foto (jika ada)
+        if ($request->hasFile('foto_pengaduan')) {
+            $validated['foto_pengaduan'] = $request->file('foto_pengaduan')->store('pengaduan_images', 'public');
+        }
 
         // Simpan ke database menggunakan Model Kontak
         Kontak::create($validated);
 
         // Kembalikan ke halaman kontak dengan pesan sukses
-        return redirect()->route('public.kontak')->with('success', 'Pesan Anda telah berhasil terkirim. Terima kasih!');
+        return redirect()->route('public.kontak')->with('success', 'Pengaduan Anda telah berhasil terkirim. Terima kasih!');
     }
     
     /**
@@ -144,11 +150,11 @@ class PageController extends Controller
      */
     public function showBerita($id)
     {
-        // 1. Ambil berita yang sedang dibuka
-        $berita = Berita::findOrFail($id);
+        // 8. PERBARUI: Tambahkan with('user') untuk mengambil nama penulis
+        $berita = Berita::with('user')->findOrFail($id);
 
-        // 2. Ambil berita terkait (misal: 3 berita terbaru, BUKAN yg sedang dibaca)
-        $related_news = Berita::where('id', '!=', $id) // <-- Kecualikan berita ini
+        // 2. Ambil berita terkait
+        $related_news = Berita::where('id', '!=', $id)
                                         ->latest()
                                         ->take(3)
                                         ->get();
@@ -156,7 +162,4 @@ class PageController extends Controller
         // 3. Kirim data ke view detail
         return view('public.berita_detail', compact('berita', 'related_news'));
     }
-
-
-    
 }

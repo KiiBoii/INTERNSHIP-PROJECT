@@ -288,12 +288,6 @@
                     </a>
                 </li>
                 
-                <!-- === INI LINK BARU ANDA === -->
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('kontak.index') ? 'active' : '' }}" href="{{ route('kontak.index') }}">
-                        <i class="bi bi-envelope-paper-fill"></i> Kontak Masuk
-                    </a>
-                </li>
                 
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('karyawan.*') ? 'active' : '' }}" href="{{ route('karyawan.index') }}">

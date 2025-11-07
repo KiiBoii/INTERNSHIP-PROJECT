@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-{{-- 1. CSS KUSTOM DITAMBAHKAN (SAMA SEPERTI HALAMAN LAINNYA) --}}
+{{-- 1. CSS KUSTOM (Tidak ada perubahan) --}}
 @push('styles')
 <style>
     /* Mengambil style dari halaman berita/home agar sama persis */
@@ -52,20 +52,19 @@
 
 @section('content')
 
-<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
+<!-- 1. Header Halaman (Slider) -->
 <div class="container my-5">
     
-    {{-- Slider ini tidak auto-scroll karena hanya 1 item --}}
     <div id="kontakHeader" class="carousel slide news-slider" data-bs-ride="false"
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://placehold.co/1920x400/007bff/white?text=Kontak+Kami" class="d-block w-100" alt="Kontak Header">
+                <img src="https://placehold.co/1920x400/007bff/white?text=Layanan+Pengaduan" class="d-block w-100" alt="Kontak Header">
                 
                 <div class="carousel-caption d-none d-md-block">
-                    <h1 class="text-white">KONTAK</h1>
-                    <p class="text-white-50">Hubungi kami untuk informasi lebih lanjut.</p>
+                    <h1 class="text-white">LAYANAN PENGADUAN</h1>
+                    <p class="text-white-50">Sampaikan laporan atau pengaduan Anda di sini.</p>
                 </div>
             </div>
         </div>
@@ -76,15 +75,14 @@
 
 
 <!-- 2. Konten Kontak (Layout Diperbarui) -->
-{{-- Wrapper .py-5 dan style margin-top negatif dihapus --}}
 <div class="container my-5">
     <div class="card shadow-lg border-0" style="border-radius: 12px;">
         <div class="row g-0">
             <!-- Kolom Kiri: Info Kontak -->
             <div class="col-lg-5" style="background-color: var(--primary-color); color: white; border-radius: 12px 0 0 12px;">
                 <div class="p-4 p-md-5">
-                    <h3 class="fw-bold text-white mb-4">Silahkan Hubungi Kami</h3>
-                    <p class="text-white-50">Jika Anda memerlukan sesuatu untuk ditanyakan atau dilaporkan, silakan hubungi kami melalui detail di bawah ini atau gunakan formulir di samping.</p>
+                    <h3 class="fw-bold text-white mb-4">Info Kontak</h3>
+                    <p class="text-white-50">Jika Anda memerlukan sesuatu untuk ditanyakan, silakan hubungi kami melalui detail di bawah ini atau gunakan formulir di samping untuk mengirim pengaduan.</p>
                     <hr class="border-light">
                     <div class="d-flex align-items-start mb-3">
                         <i class="bi bi-geo-alt-fill fs-4 me-3 mt-1"></i>
@@ -110,42 +108,60 @@
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Form -->
+            <!-- Kolom Kanan: Form Pengaduan -->
             <div class="col-lg-7">
                 <div class="card-body p-4 p-md-5">
-                    <h4 class="fw-bold mb-4">Kirim Pesan</h4>
+                    <h4 class="fw-bold mb-4">Formulir Pengaduan Masyarakat</h4>
                     
-                    {{-- Notifikasi Sukses --}}
                     @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    <form action="{{ route('public.kontak.store') }}" method="POST">
+                    {{-- === PERUBAHAN DI SINI === --}}
+                    {{-- TAMBAHKAN: enctype="multipart/form-data" --}}
+                    <form action="{{ route('public.kontak.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
+                            <label for="nama" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama') }}" required placeholder="Nama Lengkap Anda">
                             @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required placeholder="email@anda.com">
-                            @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required placeholder="email@anda.com">
+                                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            {{-- TAMBAHKAN: Field No HP --}}
+                            <div class="col-md-6 mb-3">
+                                <label for="no_hp" class="form-label">No. HP (WhatsApp)</label>
+                                <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" placeholder="0812xxxx">
+                                @error('no_hp') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
+
                         <div class="mb-3">
-                            <label for="isi_pengaduan" class="form-label">Isi Pesan/Pengaduan</label>
-                            <textarea class="form-control @error('isi_pengaduan') is-invalid @enderror" id="isi_pengaduan" name="isi_pengaduan" rows="6" required placeholder="Tuliskan pesan Anda di sini...">{{ old('isi_pengaduan') }}</textarea>
+                            <label for="isi_pengaduan" class="form-label">Isi Pengaduan / Pesan</label>
+                            <textarea class="form-control @error('isi_pengaduan') is-invalid @enderror" id="isi_pengaduan" name="isi_pengaduan" rows="6" required placeholder="Tuliskan pesan atau detail pengaduan Anda di sini...">{{ old('isi_pengaduan') }}</textarea>
                             @error('isi_pengaduan') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill fs-5 py-2">Kirim Pesan <i class="bi bi-send ms-1"></i></button>
+
+                        {{-- TAMBAHKAN: Field Upload Foto --}}
+                        <div class="mb-3">
+                            <label for="foto_pengaduan" class="form-label">Foto (Opsional)</label>
+                            <input type="file" class="form-control @error('foto_pengaduan') is-invalid @enderror" id="foto_pengaduan" name="foto_pengaduan" accept="image/*">
+                            <small class="text-muted">Max 2MB. Lampirkan foto jika diperlukan (misal: bukti, KTP, dll)</small>
+                            @error('foto_pengaduan') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill fs-5 py-2">Kirim Pengaduan <i class="bi bi-send ms-1"></i></button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 @endsection

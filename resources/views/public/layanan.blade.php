@@ -44,6 +44,35 @@
         font-size: 1rem;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
+    
+    /* === CSS BARU UNTUK KARTU KONTAK === */
+    .contact-card-link {
+        display: block;
+        background-color: #f8f9fa; /* Warna abu-abu sangat muda */
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    .contact-card-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    .contact-card-link i {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        color: var(--primary-color);
+        vertical-align: middle;
+    }
+    /* === AKHIR CSS BARU === */
+
 </style>
 @endpush
 
@@ -152,33 +181,29 @@
 
         </div>
 
-        <!-- Kolom Kanan: Form Pengaduan (Sesuai LAYANAN PUBLIK.jpg) -->
+        <!-- === KOLOM KANAN DIPERBARUI === -->
         <div class="col-lg-4">
-            <div class="card shadow-sm border-0" style="top: -50px;">
+            {{-- Hapus style="top: -50px;" agar kartu sejajar --}}
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">Hubungi Kami</h4>
-                    <p class="text-muted small">Silakan sampaikan masukan atau pengaduan Anda melalui formulir di bawah ini.</p>
+                    <h4 class="fw-bold mb-4">Hubungi Kami</h4>
                     
-                    {{-- FORM DUMMY (TIDAK ADA ACTION POST) --}}
-                    <form>
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="isi_pengaduan" class="form-label">Isi Pesan/Pengaduan</label>
-                            <textarea class="form-control" id="isi_pengaduan" name="isi_pengaduan" rows="5" required></textarea>
-                        </div>
-                        <button type="button" class="btn btn-primary w-100 rounded-pill">Kirim Pesan <i class="bi bi-send ms-1"></i></button>
-                    </form>
+                    {{-- Ganti <form> dengan <a href> --}}
+                    <a href="{{ route('public.kontak') }}" class="contact-card-link mb-3">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Masukan</span>
+                    </a>
+                    
+                    <a href="mailto:info@dinsos.riau.go.id" class="contact-card-link">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>Email Kontak</span>
+                    </a>
 
                 </div>
             </div>
         </div>
+        {{-- === AKHIR KOLOM KANAN === --}}
+
     </div>
 </div>
 

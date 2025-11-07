@@ -17,6 +17,8 @@ class Kontak extends Model
     protected $fillable = [
         'nama',
         'email',
+        'no_hp',
         'isi_pengaduan', // Kita gunakan nama ini agar sesuai dengan form Anda
+        'foto_pengaduan',
     ];
 }

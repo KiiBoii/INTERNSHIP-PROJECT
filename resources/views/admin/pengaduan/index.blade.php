@@ -1,62 +1,185 @@
 @extends('layouts.admin')
 
+{{-- 1. CSS KUSTOM (Tidak ada perubahan) --}}
+@push('styles')
+<style>
+    /* Mengubah warna background halaman admin agar lebih cocok dengan kartu */
+    .container-fluid {
+        background-color: #f0f4f8; /* Warna abu-abu muda */
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        min-height: 100vh;
+    }
+
+    .pengaduan-card {
+        border: none;
+        border-radius: 20px; /* Sesuai UI */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden; /* Penting untuk bentuk melengkung */
+        transition: all 0.3s ease;
+    }
+    
+    .pengaduan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Bentuk melengkung biru di background */
+    .pengaduan-card::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -80px;
+        width: 250px;
+        height: 250px;
+        background: var(--bs-primary); /* Mengambil warna biru primary */
+        opacity: 0.1;
+        border-radius: 50%;
+        z-index: 1;
+        transition: all 0.4s ease;
+    }
+    
+    .pengaduan-card:hover::before {
+        transform: scale(1.2);
+        opacity: 0.15;
+    }
+
+    .pengaduan-card .card-body {
+        position: relative;
+        z-index: 2; /* Konten harus di atas background biru */
+    }
+
+    .pengaduan-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--bs-primary);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .pengaduan-card .card-title {
+        color: var(--bs-primary);
+        font-weight: 700;
+    }
+
+    .pengaduan-card .card-subtitle {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .pengaduan-card .card-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    /* Tombol dropdown "..." */
+    .card-actions {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+    .card-actions .dropdown-toggle::after {
+        display: none; /* Sembunyikan panah dropdown */
+    }
+    .card-actions .dropdown-menu {
+        font-size: 0.9rem;
+    }
+
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
-    <h3 class="mb-4">Pengaduan & Pesan Masyarakat</h3>
-    <p class="text-muted mb-4">Daftar pesan, keluhan, dan masukan yang dikirim oleh publik melalui form Kontak dan Layanan.</p>
+    <h3 class="mb-2">Daftar Pengaduan Masyarakat</h3>
+    <p class="text-muted mb-4">Daftar pesan, keluhan, dan masukan yang dikirim oleh publik.</p>
+    
+    {{-- Notifikasi Sukses --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    {{-- === KONTEN DIPERBARUI === --}}
     <div class="row">
         @forelse ($pengaduans as $pengaduan)
-        <div class="col-lg-4 col-md-6 mb-4">
-            {{-- Card styling diambil dari layout global, tapi kita tambahkan h-100 --}}
-            <div class="card h-100"> 
-                <div class="card-body d-flex flex-column">
-                    
-                    {{-- Bagian Header Kartu (Info Pengirim) --}}
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; flex-shrink: 0;">
-                            {{-- Ambil 2 huruf pertama dari nama --}}
-                            <span class="fw-bold fs-5 text-primary">{{ strtoupper(substr($pengaduan->nama, 0, 2)) }}</span>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card pengaduan-card h-100">
+                    <div class="card-body text-center d-flex flex-column">
+                        
+                        <!-- Tombol Aksi "..." (Tidak berubah) -->
+                        <div class="dropdown card-actions">
+                            <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    {{-- Form Hapus di dalam dropdown --}}
+                                    <form action="{{ route('pengaduan.destroy', $pengaduan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pesan ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-trash me-2"></i> Hapus
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
-                        <div>
-                            <h5 class="card-title mb-0 fs-6 fw-bold">{{ $pengaduan->nama }}</h5>
-                            <small class="text-muted">{{ $pengaduan->email ?? 'Email tidak ada' }}</small>
+
+                        {{-- === PERUBAHAN DI SINI === --}}
+                        <!-- Info Pengirim (Avatar) -->
+                        @if($pengaduan->foto_pengaduan)
+                            {{-- Jika ada foto, tampilkan foto itu --}}
+                            <img src="{{ asset('storage/' . $pengaduan->foto_pengaduan) }}" class="pengaduan-avatar" alt="Foto Pengaduan">
+                        @else
+                            {{-- Jika tidak, tampilkan placeholder inisial --}}
+                            <img src="https://placehold.co/100x100/007bff/white?text={{ strtoupper(substr($pengaduan->nama, 0, 2)) }}" class="pengaduan-avatar" alt="Avatar">
+                        @endif
+                        {{-- === AKHIR PERUBAHAN === --}}
+                        
+                        <h5 class="card-title mb-1">{{ $pengaduan->nama }}</h5>
+                        <p class="card-subtitle mb-3">
+                            {{ $pengaduan->email }}
+                            @if($pengaduan->no_hp)
+                                | {{ $pengaduan->no_hp }}
+                            @endif
+                        </p>
+
+                        <!-- Isi Pesan -->
+                        <p class="card-text text-muted">
+                            "{{ Str::limit($pengaduan->isi_pengaduan, 150) }}"
+                        </p>
+                        
+                        <div class="mt-auto">
+                            
+                            {{-- === PERUBAHAN DI SINI === --}}
+                            <!-- Link Foto Lampiran TELAH DIHAPUS -->
+                            {{-- === AKHIR PERUBAHAN === --}}
+                            
+                            <!-- Tanggal -->
+                            <small class="d-block text-muted">{{ $pengaduan->created_at->format('d F Y, H:i') }}</small>
                         </div>
                     </div>
-
-                    {{-- Isi Pesan/Pengaduan --}}
-                    <p class="card-text fst-italic text-dark bg-light p-3 rounded-3">
-                        "{{ $pengaduan->isi_pengaduan }}"
-                    </p>
-
-                    {{-- Footer Kartu (Tanggal) --}}
-                    <div class="mt-auto text-end">
-                        <small class="text-muted">{{ $pengaduan->created_at->format('d/m/Y H:i') }}</small>
-                    </div>
-
-                    {{-- Opsional: Tombol Hapus Pesan --}}
-                    {{-- 
-                    <hr>
-                    <form action="#" method="POST" onsubmit="return confirm('Hapus pesan ini?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
-                            <i class="bi bi-trash me-1"></i> Tandai Selesai / Hapus
-                        </button>
-                    </form>
-                    --}}
-
                 </div>
             </div>
-        </div>
         @empty
-        {{-- Pesan jika tidak ada pengaduan --}}
-        <div class="col-12">
-            <div class="alert alert-secondary text-center" role="alert">
-                Belum ada pengaduan atau pesan yang masuk dari publik.
+            <div class="col-12">
+                <div class="alert alert-secondary text-center">
+                    Belum ada pesan atau pengaduan yang masuk.
+                </div>
             </div>
-        </div>
         @endforelse
     </div>
+    {{-- === AKHIR KONTEN DIPERBARUI === --}}
+
+    <!-- Paginasi -->
+    <div class="d-flex justify-content-center mt-4">
+        {!! $pengaduans->links() !!}
+    </div>
+
 </div>
 @endsection
