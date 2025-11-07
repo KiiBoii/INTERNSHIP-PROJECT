@@ -78,42 +78,59 @@
 
 @section('content')
 
-<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER) -->
+<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER DINAMIS) -->
 <div class="container my-5">
     
     <div id="heroSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" 
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
+        <!-- Indicators (Dibuat dinamis) -->
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            {{-- Periksa apakah variabel $sliders ada dan merupakan Collection --}}
+            @if(isset($sliders) && $sliders->count() > 0)
+                @foreach($sliders as $slider)
+                    <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $loop->iteration }}"></button>
+                @endforeach
+            @else
+                {{-- Indikator Fallback --}}
+                <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            @endif
         </div>
+        
+        <!-- Slides (Dibuat dinamis dengan forelse) -->
         <div class="carousel-inner">
-            {{-- Ini adalah placeholder slider dari home.blade.php --}}
-            {{-- Idealnya, Anda mengirim data dinamis dari PageController@layanan --}}
-            <div class="carousel-item active">
-                <img src="https://placehold.co/1920x600/6610f2/white?text=Layanan+Publik" class="d-block w-100" alt="Slider 1">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>LAYANAN PUBLIK</h5>
-                    <p>Informasi layanan, pusat bantuan, dan formulir pengaduan.</p>
+            @forelse(isset($sliders) ? $sliders : [] as $slider)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    {{-- Pastikan Anda menggunakan asset('storage/') untuk gambar yang disimpan di disk 'public' --}}
+                    <img src="{{ asset('storage/' . $slider->gambar) }}" class="d-block w-100" alt="{{ $slider->judul }}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ $slider->judul }}</h5>
+                        <p>{{ $slider->keterangan }}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="carousel-item">
-                <img src="https://placehold.co/1920x600/007bff/white?text=Program+Bantuan+Sosial" class="d-block w-100" alt="Slider 2">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Program Bantuan Sosial</h5>
-                    <p>Informasi terbaru seputar program bantuan sosial di Provinsi Riau.</p>
+            @empty
+                {{-- Fallback jika tidak ada data slider yang tersedia --}}
+                <div class="carousel-item active">
+                    <img src="https://placehold.co/1920x450/6610f2/white?text=LAYANAN+DINAS+SOSIAL" class="d-block w-100" alt="Slider Fallback">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>LAYANAN PUBLIK</h5>
+                        <p>Informasi layanan, pusat bantuan, dan formulir pengaduan.</p>
+                    </div>
                 </div>
-            </div>
+            @endforelse
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroSlider" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroSlider" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+        
+        {{-- Tampilkan tombol navigasi hanya jika slide lebih dari 1 --}}
+        @if(isset($sliders) && $sliders->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroSlider" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroSlider" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        @endif
     </div>
 
 </div> <!-- Penutup container slider -->
@@ -183,12 +200,10 @@
 
         <!-- === KOLOM KANAN DIPERBARUI === -->
         <div class="col-lg-4">
-            {{-- Hapus style="top: -50px;" agar kartu sejajar --}}
             <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-body p-4">
                     <h4 class="fw-bold mb-4">Hubungi Kami</h4>
                     
-                    {{-- Ganti <form> dengan <a href> --}}
                     <a href="{{ route('public.kontak') }}" class="contact-card-link mb-3">
                         <i class="bi bi-pencil-square"></i>
                         <span>Masukan</span>

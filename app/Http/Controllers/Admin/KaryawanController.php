@@ -6,10 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\User; // Import Model User
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; // Untuk hash password
-use Illuminate\Validation\Rule; // <-- 1. IMPORT INI
+use Illuminate\Validation\Rule; // Import ini
 
 class KaryawanController extends Controller
 {
+    // === TAMBAHAN: DEFINISI DAFTAR ROLE ===
+    private $roleList = [
+        'admin' => 'Admin Utama',
+        'berita' => 'Admin Konten Berita',
+        // Tambahkan role lain jika diperlukan di sini
+    ];
+    // ======================================
+
     /**
      * Display a listing of the resource.
      */
@@ -24,7 +32,10 @@ class KaryawanController extends Controller
      */
     public function create()
     {
-        return view('admin.karyawan.create');
+        // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW ===
+        return view('admin.karyawan.create', [
+            'roleList' => $this->roleList
+        ]);
     }
 
     /**
@@ -36,7 +47,9 @@ class KaryawanController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // 'confirmed' butuh field password_confirmation
-            'role' => ['required', Rule::in(['admin', 'berita'])], // <-- 2. TAMBAHKAN VALIDASI ROLE
+            // === PERUBAHAN: VALIDASI ROLE BERDASARKAN roleList ===
+            'role' => ['required', Rule::in(array_keys($this->roleList))],
+            // =======================================================
             'jabatan' => 'nullable|string|max:255',
             'departemen' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:20',
@@ -63,7 +76,9 @@ class KaryawanController extends Controller
      */
     public function edit(User $karyawan)
     {
-        return view('admin.karyawan.edit', compact('karyawan'));
+        // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW EDIT ===
+        $roleList = $this->roleList;
+        return view('admin.karyawan.edit', compact('karyawan', 'roleList'));
     }
 
     /**
@@ -75,7 +90,9 @@ class KaryawanController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $karyawan->id, // Abaikan email ini saat update
             'password' => 'nullable|string|min:8|confirmed', // Password opsional saat update
-            'role' => ['required', Rule::in(['admin', 'berita'])], // <-- 3. TAMBAHKAN VALIDASI ROLE
+            // === PERUBAHAN: VALIDASI ROLE BERDASARKAN roleList ===
+            'role' => ['required', Rule::in(array_keys($this->roleList))],
+            // =======================================================
             'jabatan' => 'nullable|string|max:255',
             'departemen' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:20',

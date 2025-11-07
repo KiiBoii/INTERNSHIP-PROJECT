@@ -52,33 +52,62 @@
 
 @section('content')
 
-<!-- 1. Header Halaman (Slider) -->
 <div class="container my-5">
     
-    <div id="kontakHeader" class="carousel slide news-slider" data-bs-ride="false"
+    <div id="kontakHeader" class="carousel slide news-slider" data-bs-ride="{{ (isset($sliders) && $sliders->count() > 1) ? 'carousel' : 'false' }}"
+         data-bs-pause="{{ (isset($sliders) && $sliders->count() > 1) ? 'false' : 'true' }}" 
+         data-bs-interval="3000"
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://placehold.co/1920x400/007bff/white?text=Layanan+Pengaduan" class="d-block w-100" alt="Kontak Header">
-                
-                <div class="carousel-caption d-none d-md-block">
-                    <h1 class="text-white">LAYANAN PENGADUAN</h1>
-                    <p class="text-white-50">Sampaikan laporan atau pengaduan Anda di sini.</p>
-                </div>
-            </div>
+        <div class="carousel-indicators">
+            @if(isset($sliders) && $sliders->count() > 1)
+                @foreach($sliders as $slider)
+                    <button type="button" data-bs-target="#kontakHeader" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $loop->iteration }}"></button>
+                @endforeach
+            @endif
         </div>
+        
+        <div class="carousel-inner">
+            @forelse(isset($sliders) ? $sliders : [] as $slider)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    {{-- Pastikan Anda menggunakan asset('storage/') --}}
+                    <img src="{{ asset('storage/' . $slider->gambar) }}" class="d-block w-100" alt="{{ $slider->judul }}">
+                    
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="text-white">{{ $slider->judul }}</h1>
+                        <p class="text-white-50">{{ $slider->keterangan }}</p>
+                    </div>
+                </div>
+            @empty
+                {{-- Fallback jika tidak ada data slider yang tersedia --}}
+                <div class="carousel-item active">
+                    <img src="https://placehold.co/1920x450/007bff/white?text=LAYANAN+PENGADUAN" class="d-block w-100" alt="Kontak Header Fallback">
+                    
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="text-white">LAYANAN PENGADUAN</h1>
+                        <p class="text-white-50">Sampaikan laporan atau pengaduan Anda di sini.</p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+        
+        {{-- Tampilkan tombol navigasi hanya jika slide lebih dari 1 --}}
+        @if(isset($sliders) && $sliders->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#kontakHeader" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#kontakHeader" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        @endif
         
     </div>
 
-</div> <!-- Penutup container slider -->
-
-
-<!-- 2. Konten Kontak (Layout Diperbarui) -->
-<div class="container my-5">
+</div> <div class="container my-5">
     <div class="card shadow-lg border-0" style="border-radius: 12px;">
         <div class="row g-0">
-            <!-- Kolom Kiri: Info Kontak -->
             <div class="col-lg-5" style="background-color: var(--primary-color); color: white; border-radius: 12px 0 0 12px;">
                 <div class="p-4 p-md-5">
                     <h3 class="fw-bold text-white mb-4">Info Kontak</h3>
@@ -108,7 +137,6 @@
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Form Pengaduan -->
             <div class="col-lg-7">
                 <div class="card-body p-4 p-md-5">
                     <h4 class="fw-bold mb-4">Formulir Pengaduan Masyarakat</h4>
@@ -119,8 +147,7 @@
                         </div>
                     @endif
 
-                    {{-- === PERUBAHAN DI SINI === --}}
-                    {{-- TAMBAHKAN: enctype="multipart/form-data" --}}
+                    {{-- Formulir sudah benar dengan enctype="multipart/form-data" --}}
                     <form action="{{ route('public.kontak.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
@@ -135,7 +162,7 @@
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required placeholder="email@anda.com">
                                 @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            {{-- TAMBAHKAN: Field No HP --}}
+                            {{-- Field No HP --}}
                             <div class="col-md-6 mb-3">
                                 <label for="no_hp" class="form-label">No. HP (WhatsApp)</label>
                                 <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" placeholder="0812xxxx">
@@ -149,7 +176,7 @@
                             @error('isi_pengaduan') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        {{-- TAMBAHKAN: Field Upload Foto --}}
+                        {{-- Field Upload Foto --}}
                         <div class="mb-3">
                             <label for="foto_pengaduan" class="form-label">Foto (Opsional)</label>
                             <input type="file" class="form-control @error('foto_pengaduan') is-invalid @enderror" id="foto_pengaduan" name="foto_pengaduan" accept="image/*">
