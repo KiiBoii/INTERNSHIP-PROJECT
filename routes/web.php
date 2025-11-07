@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
 // --- IMPORT CONTROLLER ADMIN ---
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BeritaController; 
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\PengaduanController;
@@ -14,6 +15,12 @@ use App\Http\Controllers\Admin\KontakController;
 // --- IMPORT CONTROLLER PUBLIC ---
 use App\Http\Controllers\Public\PageController;
 
+// --- IMPORT CONTROLLER AUTH KUSTOM KITA ---
+use App\Http\Controllers\Auth\LoginController;
+
+// --- IMPORT MIDDLEWARE (UNTUK SOLUSI 2) ---
+use App\Http\Middleware\PreventBackHistory;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +28,6 @@ use App\Http\Controllers\Public\PageController;
 */
 
 // === RUTE HALAMAN PUBLIK (TANPA LOGIN) ===
-// (Tidak ada perubahan di sini)
 Route::get('/', [PageController::class, 'home'])->name('public.home');
 Route::get('/profil', [PageController::class, 'profil'])->name('public.profil');
 Route::get('/berita', [PageController::class, 'berita'])->name('public.berita');
@@ -33,15 +39,24 @@ Route::get('/kontak', [PageController::class, 'kontak'])->name('public.kontak');
 Route::post('/kontak', [PageController::class, 'storeKontak'])->name('public.kontak.store');
 
 
+// === RUTE AUTENTIKASI KUSTOM (LOGIN/LOGOUT) ===
+Route::middleware('guest')->group(function () {
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+});
+Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
+
 // === GRUP UNTUK SEMUA HALAMAN ADMIN ===
-// Middleware 'verified' diganti dengan 'role'
-// Grup ini sekarang memvalidasi bahwa pengguna harus login DAN memiliki role 'admin' ATAU 'berita'
-Route::middleware(['auth', 'role:admin,berita'])->prefix('admin')->group(function () {
+//
+// === PERUBAHAN DI SINI ===
+// Mengganti alias 'no-cache' dengan path class lengkap
+//
+Route::middleware(['auth', 'role:admin,berita', PreventBackHistory::class])->prefix('admin')->group(function () {
     
     // --- Rute yang bisa diakses KEDUA role (Admin & Berita) ---
     Route::resource('berita', BeritaController::class)->parameter('berita', 'berita');
     
-    // Rute Profil (Diasumsikan kedua role bisa mengedit profil mereka sendiri)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -50,11 +65,8 @@ Route::middleware(['auth', 'role:admin,berita'])->prefix('admin')->group(functio
     // --- Rute yang HANYA bisa diakses oleh 'admin' ---
     Route::middleware('role:admin')->group(function () {
         
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard'); // Pastikan file ini ada
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
-        // Rute CRUD Modul Admin Lainnya
         Route::resource('galeri', GaleriController::class);
         Route::resource('pengumuman', PengumumanController::class);
         Route::resource('karyawan', KaryawanController::class);
@@ -66,6 +78,4 @@ Route::middleware(['auth', 'role:admin,berita'])->prefix('admin')->group(functio
 }); // Akhir grup 'auth'
 
 
-// Ini adalah file yang berisi route untuk login, register, logout, dll.
-// BIARKAN SEPERTI INI.
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php'; // Biarkan ini ter-komentar (dihapus)

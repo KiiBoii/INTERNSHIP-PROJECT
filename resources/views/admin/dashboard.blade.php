@@ -11,7 +11,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="fs-5 fw-bold">120</div>
+                            {{-- Ganti angka statis dengan variabel --}}
+                            <div class="fs-5 fw-bold">{{ $totalBerita }}</div>
                             <div class="text-uppercase small">Berita</div>
                         </div>
                         <i class="bi bi-newspaper fs-2"></i>
@@ -27,7 +28,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="fs-5 fw-bold">85</div>
+                            {{-- Ganti angka statis dengan variabel --}}
+                            <div class="fs-5 fw-bold">{{ $totalGaleri }}</div>
                             <div class="text-uppercase small">Galeri Foto</div>
                         </div>
                         <i class="bi bi-images fs-2"></i>
@@ -43,8 +45,9 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="fs-5 fw-bold">30</div>
-                            <div class="text-uppercase small">Pengaduan Baru</div>
+                            {{-- Ganti angka statis dengan variabel --}}
+                            <div class="fs-5 fw-bold">{{ $totalPengaduan }}</div>
+                            <div class="text-uppercase small">Pengaduan</div>
                         </div>
                         <i class="bi bi-chat-left-text fs-2"></i>
                     </div>
@@ -59,7 +62,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="fs-5 fw-bold">15</div>
+                            {{-- Ganti angka statis dengan variabel --}}
+                            <div class="fs-5 fw-bold">{{ $totalPengumuman }}</div>
                             <div class="text-uppercase small">Pengumuman</div>
                         </div>
                         <i class="bi bi-megaphone fs-2"></i>
@@ -73,75 +77,99 @@
     </div>
 
     <div class="row">
-        {{-- === INI PERBAIKANNYA === --}}
+        {{-- Grafik --}}
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
-                <div class="card-header">Grafik Data Pengunjung (Contoh)</div>
-                {{-- Mengganti 'min-height: 250px' menjadi 'height: 350px' --}}
+                <div class="card-header">Grafik Berita Dibuat (6 Bulan Terakhir)</div>
                 <div class="card-body" style="position: relative; height: 350px;">
-                    <canvas id="visitorChart"></canvas> 
+                    <canvas id="contentChart"></canvas> 
                 </div>
             </div>
         </div>
 
-        {{-- Card Aktivitas Terbaru (Placeholder) --}}
+        {{-- === KARTU AKTIVITAS DIPERBARUI === --}}
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">Aktivitas Terbaru</div>
                 <div class="card-body">
+                    {{-- Ganti <ul> statis dengan loop dinamis --}}
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Admin X mengunggah berita baru "Hari Kemerdekaan". <small class="text-muted float-end">Baru saja</small></li>
-                        <li class="list-group-item">Pengaduan baru dari Budi Santoso. <small class="text-muted float-end">1 jam lalu</small></li>
-                        <li class="list-group-item">Admin Y memperbarui galeri kegiatan. <small class="text-muted float-end">Kemarin</small></li>
-                        <li class="list-group-item">Pengumuman baru: "Libur Nasional". <small class="text-muted float-end">2 hari lalu</small></li>
+                        @forelse($recentActivities as $activity)
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="bi {{ $activity->icon }} fs-4 text-primary me-3"></i>
+                                <div>
+                                    <a href="{{ $activity->route }}" class="text-decoration-none text-dark stretched-link">
+                                        <strong>{{ $activity->jenis_aktivitas }}</strong>: 
+                                        {{ Str::limit($activity->judul_aktivitas, 40) }}
+                                    </a>
+                                    <small class="d-block text-muted">
+                                        {{-- Menampilkan waktu (misal: "5 menit yang lalu") --}}
+                                        {{ $activity->created_at->diffForHumans() }} 
+                                    </small>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="list-group-item text-center text-muted">
+                                Belum ada aktivitas terbaru.
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
         </div>
+        {{-- === AKHIR KARTU AKTIVITAS === --}}
     </div>
 
 </div>
 @endsection
 
-{{-- === SCRIPT UNTUK DUMMY DATA (BIARKAN SEPERTI INI) === --}}
 @push('scripts')
+{{-- 1. Load Chart.js (PENTING) --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    // Pastikan script berjalan setelah DOM siap
     document.addEventListener('DOMContentLoaded', function () {
         
         // Mengambil canvas
-        const ctx = document.getElementById('visitorChart').getContext('2d');
+        const ctx = document.getElementById('contentChart').getContext('2d');
         
-        // Data dummy
-        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
+        // 2. Mengambil data dari Controller (Blade -> JS)
+        const labels = {!! json_encode($chartLabels) !!};
+        const chartData = {!! json_encode($chartData) !!};
+
+        // 3. Konfigurasi data chart
         const data = {
             labels: labels,
             datasets: [{
-                label: 'Jumlah Pengunjung',
-                data: [65, 59, 80, 81, 56, 55, 40], // Data dummy
-                fill: true, // Memberi warna di bawah garis
-                borderColor: 'rgb(0, 123, 255)', // Warna garis (biru)
-                backgroundColor: 'rgba(0, 123, 255, 0.1)', // Warna area di bawah garis
-                tension: 0.1 // Membuat garis sedikit melengkung
+                label: 'Jumlah Berita Dibuat',
+                data: chartData, // <-- Data dinamis
+                fill: true,
+                borderColor: 'rgb(0, 123, 255)',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.1
             }]
         };
 
-        // Konfigurasi chart
+        // 4. Konfigurasi opsi chart
         const config = {
-            type: 'line', // Tipe chart: line
+            type: 'line',
             data: data,
             options: {
-                responsive: true, // Membuat chart responsif
-                maintainAspectRatio: false, // Membiarkan chart mengisi container
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true // Mulai sumbu Y dari 0
+                        beginAtZero: true,
+                        // Memastikan sumbu Y hanya menampilkan angka bulat (1, 2, 3)
+                        ticks: {
+                            stepSize: 1 
+                        }
                     }
                 }
             }
         };
 
-        // Membuat chart
+        // 5. Membuat chart
         const myChart = new Chart(
             ctx,
             config
