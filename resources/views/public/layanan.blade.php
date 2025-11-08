@@ -72,36 +72,36 @@
         vertical-align: middle;
     }
     /* === AKHIR CSS BARU === */
-
+    
+    /* Style untuk tombol Tab yang aktif */
+    .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+        border-radius: 8px;
+    }
 </style>
 @endpush
 
 @section('content')
 
-<!-- 1. Header Halaman (DIGANTI DENGAN SLIDER DINAMIS) -->
 <div class="container my-5">
     
     <div id="heroSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" 
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
-        <!-- Indicators (Dibuat dinamis) -->
         <div class="carousel-indicators">
-            {{-- Periksa apakah variabel $sliders ada dan merupakan Collection --}}
             @if(isset($sliders) && $sliders->count() > 0)
                 @foreach($sliders as $slider)
                     <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $loop->iteration }}"></button>
                 @endforeach
             @else
-                {{-- Indikator Fallback --}}
                 <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             @endif
         </div>
         
-        <!-- Slides (Dibuat dinamis dengan forelse) -->
         <div class="carousel-inner">
             @forelse(isset($sliders) ? $sliders : [] as $slider)
                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                    {{-- Pastikan Anda menggunakan asset('storage/') untuk gambar yang disimpan di disk 'public' --}}
                     <img src="{{ asset('storage/' . $slider->gambar) }}" class="d-block w-100" alt="{{ $slider->judul }}">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>{{ $slider->judul }}</h5>
@@ -109,7 +109,6 @@
                     </div>
                 </div>
             @empty
-                {{-- Fallback jika tidak ada data slider yang tersedia --}}
                 <div class="carousel-item active">
                     <img src="https://placehold.co/1920x450/6610f2/white?text=LAYANAN+DINAS+SOSIAL" class="d-block w-100" alt="Slider Fallback">
                     <div class="carousel-caption d-none d-md-block">
@@ -120,7 +119,6 @@
             @endforelse
         </div>
         
-        {{-- Tampilkan tombol navigasi hanya jika slide lebih dari 1 --}}
         @if(isset($sliders) && $sliders->count() > 1)
             <button class="carousel-control-prev" type="button" data-bs-target="#heroSlider" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -133,72 +131,152 @@
         @endif
     </div>
 
-</div> <!-- Penutup container slider -->
-
-
-<!-- 2. Konten Layanan (Sesuai LAYANAN PUBLIK.jpg) -->
-<div class="container my-5">
+</div> <div class="container my-5">
     <div class="row">
-        <!-- Kolom Kiri: Layanan & FAQ -->
+        
         <div class="col-lg-8">
-            <h2 class="section-title text-start ps-0" style="margin-left: 0; margin-bottom: 2rem;">Pelayanan Mandiri</h2>
-            <p class="text-muted mb-4">Temukan informasi layanan yang Anda butuhkan melalui tautan di bawah ini.</p>
-            <div class="row g-3 mb-5">
-                <div class="col-md-4">
-                    <a href="#" class="btn btn-primary w-100 p-3 fs-5 rounded-3">Info Bantuan</a>
+                            <div class="tab-pane fade show active" id="content-mandiri" role="tabpanel" aria-labelledby="tab-mandiri">
+                    <h2 class="section-title text-start ps-0 mb-4">Pelayanan Mandiri</h2>
+                    <p class="text-muted mb-4">Temukan informasi layanan yang Anda butuhkan melalui tautan di bawah ini.</p>
                 </div>
-                <div class="col-md-4">
-                    <a href="#" class="btn btn-outline-primary w-100 p-3 fs-5 rounded-3">Cek Status DTKS</a>
-                </div>
-                <div class="col-md-4">
-                    <a href="#pusat-bantuan" class="btn btn-outline-primary w-100 p-3 fs-5 rounded-3">Pusat Bantuan</a>
-                </div>
-            </div>
+            
+            {{-- Navigasi Tabs: TIGA NAVIGASI UTAMA DI ATAS --}}
+            <ul class="nav nav-pills nav-fill mb-4 p-2 bg-light rounded-3" id="serviceTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold text-dark w-100 py-3" id="tab-dokumen" data-bs-toggle="pill" data-bs-target="#content-dokumen" type="button" role="tab" aria-controls="content-dokumen" aria-selected="false">
+                        <i class="bi bi-file-earmark-zip me-2"></i> Dokumen Publikasi
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold text-dark w-100 py-3" id="tab-bantuan" data-bs-toggle="pill" data-bs-target="#content-bantuan" type="button" role="tab" aria-controls="content-bantuan" aria-selected="false">
+                        <i class="bi bi-question-circle me-2"></i> Pusat Bantuan
+                    </button>
+                </li>
+            </ul>
 
-            <!-- Pusat Bantuan / FAQ (Sesuai LAYANAN PUBLIK.jpg) -->
-            <h3 id="pusat-bantuan" class="fw-bold mb-4">Pusat Bantuan</h3>
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Bagaimana cara mendaftar Bantuan Sosial?
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            Pendaftaran Bantuan Sosial dilakukan melalui Data Terpadu Kesejahteraan Sosial (DTKS). Silakan mendaftar ke kantor desa/lurah setempat...
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Apa saja syarat untuk mendapatkan rehabilitasi sosial?
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            Syarat utama adalah...
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Bagaimana cara melaporkan pengaduan?
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            Anda dapat menggunakan formulir pengaduan di samping, atau menghubungi kami melalui kontak yang tertera.
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{-- Tab Content --}}
+            <div class="tab-content" id="serviceTabContent">
 
+                {{-- TAB 2: DOKUMEN PUBLIKASI (Fitur Baru) --}}
+                <div class="tab-pane fade" id="content-dokumen" role="tabpanel" aria-labelledby="tab-dokumen">
+                    <h2 class="section-title text-start ps-0 mb-4">Dokumen Publikasi</h2>
+                    <p class="text-muted mb-4">Unduh dokumen resmi yang diterbitkan oleh Dinas Sosial Provinsi Riau.</p>
+
+                    {{-- FITUR SEARCH DAN PER PAGE --}}
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <label for="perPageDok" class="me-2">Tampilkan</label>
+                            <select id="perPageDok" class="form-select form-select-sm w-auto" onchange="window.location.href = this.value;">
+                                @php
+                                    $currentPage = $dokumens->perPage();
+                                    $currentUrl = request()->fullUrlWithoutQuery(['per_page', 'cari']);
+                                @endphp
+                                @foreach ([10, 25, 50] as $size)
+                                    <option value="{{ $currentUrl }}?per_page={{ $size }}{{ request('cari') ? '&cari=' . request('cari') : '' }}" {{ $currentPage == $size ? 'selected' : '' }}>
+                                        {{ $size }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span class="ms-2">data per halaman</span>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="#content-dokumen" method="GET" class="d-flex" onsubmit="window.location.href='#' + this.action.split('#')[1]">
+                                <input type="text" name="cari" class="form-control" placeholder="Cari Dokumen..." value="{{ request('cari') }}">
+                                <button type="submit" class="btn btn-primary ms-2">Cari</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    {{-- TABEL DOKUMEN --}}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Judul Dokumen</th>
+                                    <th>Keterangan</th>
+                                    <th style="width: 120px;">Download</th>
+                                    <th style="width: 150px;">Tanggal Upload</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($dokumens as $dokumen)
+                                <tr>
+                                    <td>{{ $dokumens->firstItem() + $loop->index }}</td>
+                                    <td>{{ $dokumen->judul }}</td>
+                                    <td>{{ $dokumen->keterangan }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ $dokumen->download_url }}" target="_blank" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    </td>
+                                    <td>{{ $dokumen->created_at->format('d M Y') }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">Dokumen tidak ditemukan.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {{-- Pagination Links --}}
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $dokumens->links('pagination::bootstrap-5') }}
+                    </div>
+
+                </div>
+                
+                {{-- TAB 3: PUSAT BANTUAN (FAQ) --}}
+                <div class="tab-pane fade" id="content-bantuan" role="tabpanel" aria-labelledby="tab-bantuan">
+                    <h3 id="pusat-bantuan" class="fw-bold mb-4">Pusat Bantuan</h3>
+                    <p class="text-muted mb-4">Berikut adalah jawaban untuk pertanyaan yang sering diajukan seputar layanan kami.</p>
+                    
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Bagaimana cara mendaftar Bantuan Sosial?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Pendaftaran Bantuan Sosial dilakukan melalui Data Terpadu Kesejahteraan Sosial (DTKS). Silakan mendaftar ke kantor desa/lurah setempat...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Apa saja syarat untuk mendapatkan rehabilitasi sosial?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Syarat utama adalah...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Bagaimana cara melaporkan pengaduan?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Anda dapat menggunakan formulir pengaduan di samping, atau menghubungi kami melalui kontak yang tertera.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
-        <!-- === KOLOM KANAN DIPERBARUI === -->
         <div class="col-lg-4">
             <div class="card shadow-sm border-0" style="border-radius: 12px;">
                 <div class="card-body p-4">
@@ -217,9 +295,48 @@
                 </div>
             </div>
         </div>
-        {{-- === AKHIR KOLOM KANAN === --}}
-
+        
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cek apakah ada parameter 'per_page' atau 'cari' di URL.
+        // Jika ada, itu berarti user melakukan pencarian/pagination di Tab Dokumen.
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('cari') || urlParams.has('per_page')) {
+            // Aktifkan Tab Dokumen secara otomatis
+            const tabElement = document.getElementById('tab-dokumen');
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
+
+        // Script untuk memastikan tombol di Tab "Pelayanan Mandiri" mengaktifkan Tab yang benar
+        document.querySelectorAll('a[data-bs-toggle="pill"]').forEach(function(element) {
+            element.addEventListener('click', function (event) {
+                event.preventDefault();
+                const targetId = this.getAttribute('data-bs-target');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const navButton = document.querySelector(`button[data-bs-target="${targetId}"]`);
+                    if (navButton) {
+                         const tab = new bootstrap.Tab(navButton);
+                         tab.show();
+                    } else {
+                        const tab = new bootstrap.Tab(targetElement.closest('.tab-pane'));
+                        tab.show();
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+@endpush

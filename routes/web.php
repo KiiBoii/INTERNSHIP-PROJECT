@@ -10,9 +10,8 @@ use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\PengaduanController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\PengumumanController;
-// use App\Http\Controllers\Admin\KontakController; // <-- Dihapus, digabung ke Pengaduan
-use App\Http\Controllers\Admin\SliderController; // <-- 1. IMPORT SLIDER CONTROLLER
-
+use App\Http\Controllers\Admin\SliderController; 
+use App\Http\Controllers\Admin\DokumenController; // <--- INI SUDAH BENAR
 // --- IMPORT CONTROLLER PUBLIC ---
 use App\Http\Controllers\Public\PageController;
 
@@ -49,10 +48,6 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middl
 
 
 // === GRUP UNTUK SEMUA HALAMAN ADMIN ===
-//
-// === PERUBAHAN DI SINI ===
-// Mengganti alias 'no-cache' dengan path class lengkap
-//
 Route::middleware(['auth', 'role:admin,berita', PreventBackHistory::class])->prefix('admin')->group(function () {
     
     // --- Rute yang bisa diakses KEDUA role (Admin & Berita) ---
@@ -65,6 +60,12 @@ Route::middleware(['auth', 'role:admin,berita', PreventBackHistory::class])->pre
 
     // --- Rute yang HANYA bisa diakses oleh 'admin' ---
     Route::middleware('role:admin')->group(function () {
+
+        // PERBAIKAN: Hapus 'Admin\' karena sudah di-import di atas
+Route::resource('dokumen', DokumenController::class)
+    ->parameters(['dokumen' => 'dokumen'])
+    ->names('admin.dokumen');
+
         
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
@@ -72,22 +73,15 @@ Route::middleware(['auth', 'role:admin,berita', PreventBackHistory::class])->pre
         Route::resource('pengumuman', PengumumanController::class);
         Route::resource('karyawan', KaryawanController::class);
         
-        // Mengganti get() dengan resource() agar mencakup 'index' dan 'destroy'
         Route::resource('pengaduan', PengaduanController::class)->only([
             'index', 'destroy'
         ]);
         
-        // Mengarahkan 'kontak.index' ke PengaduanController untuk fix error sidebar
         Route::get('kontak', [PengaduanController::class, 'index'])->name('kontak.index');
 
-        // <-- 2. TAMBAHKAN RUTE BARU INI UNTUK SLIDER -->
         Route::resource('slider', SliderController::class);
         Route::patch('slider/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('slider.toggle');
-        // <-- AKHIR RUTE BARU -->
     
     }); // Akhir grup 'role:admin'
 
 }); // Akhir grup 'auth'
-
-
-// require __DIR__.'/auth.php'; // Biarkan ini ter-komentar (dihapus)

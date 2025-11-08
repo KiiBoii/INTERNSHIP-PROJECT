@@ -302,6 +302,13 @@
         Manajemen Slider
     </a>
 </li>
+<li class="nav-item">
+    {{-- PERBAIKAN: Mengganti dokumen.index menjadi admin.dokumen.index --}}
+    <a class="nav-link {{ request()->routeIs('admin.dokumen.index') ? 'active' : '' }}" href="{{ route('admin.dokumen.index') }}">
+        <i class="bi bi-file-earmark-text-fill me-2"></i>
+        Dokumen Publikasi
+    </a>
+</li>
 
 <!-- ... Link menu lainnya ... -->
             </ul>
@@ -407,4 +414,3 @@
     </script>
 </body>
 </html>
-
