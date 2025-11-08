@@ -1,57 +1,67 @@
 @extends('layouts.public')
 
-{{-- 1. CSS KUSTOM (Tidak ada perubahan) --}}
+{{-- 1. CSS KUSTOM --}}
 @push('styles')
-<style>
-    /* Mengambil style dari halaman berita agar sama persis */
-    .news-slider .carousel-item {
-        height: 450px; /* Atur tinggi slider */
-        background-color: #555;
-    }
+    {{-- [BARU] Tambahkan CSS AOS (Animate On Scroll) --}}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
 
-    .news-slider .carousel-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Pastikan gambar mengisi area */
-    }
+    <style>
+        /* Mengambil style dari halaman berita agar sama persis */
+        .news-slider .carousel-item {
+            height: 450px; /* Atur tinggi slider */
+            background-color: #555;
+        }
 
-    /* Overlay gradient gelap agar teks terbaca */
-    .news-slider .carousel-item::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to top, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0) 80%);
-    }
+        .news-slider .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Pastikan gambar mengisi area */
+        }
 
-    .news-slider .carousel-caption {
-        bottom: 0;
-        z-index: 10;
-        text-align: left;
-        padding: 2rem 1.5rem;
-        width: 80%; 
-        left: 5%; 
-    }
+        /* Overlay gradient gelap agar teks terbaca */
+        .news-slider .carousel-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0) 80%);
+        }
 
-    .news-slider .carousel-caption h5 {
-        font-size: 2rem; 
-        font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-    .news-slider .carousel-caption p {
-        font-size: 1rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
-</style>
+        .news-slider .carousel-caption {
+            bottom: 0;
+            z-index: 10;
+            text-align: left;
+            padding: 2rem 1.5rem;
+            width: 80%; 
+            left: 5%; 
+        }
+
+        .news-slider .carousel-caption h5 {
+            font-size: 2rem; 
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .news-slider .carousel-caption p {
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* [OPSIONAL] Sembunyikan elemen AOS sebelum terlihat untuk mencegah 'flash' */
+        [data-aos] {
+            opacity: 0;
+            transition-property: opacity, transform;
+        }
+    </style>
 @endpush
 
 
 @section('content')
 
 <!-- 1. Bagian Slider/Hero (TELAH DIPERBARUI MENJADI DINAMIS) -->
-<div class="container my-5">
+{{-- [ANIMASI] Animasi fade-in saat halaman dimuat --}}
+<div class="container my-5" data-aos="fade-in" data-aos-duration="1000">
     
     <div id="heroSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" 
          style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
@@ -104,7 +114,8 @@
 <!-- 2. Bagian Sambutan Kepala Dinas (Tidak diubah) -->
 <div class="container my-5">
     <div class="row align-items-center">
-        <div class="col-lg-8">
+        {{-- [ANIMASI] Kolom kiri slide dari kanan --}}
+        <div class="col-lg-8" data-aos="fade-right" data-aos-offset="100">
             <small class="text-primary fw-bold text-uppercase">Profil</small>
             <h2 class="fw-bold mb-3" style="color: #0d47a1;">KEPALA DINAS</h2>
             
@@ -130,7 +141,8 @@
             <p class="text-muted">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Nulla facilisi. Praesent sed felis metus. Vestibulum ac mauris pretium, consequat eros vitae, volutpat neque. Mauris pretium, nisl sed facilisis eleifend, eros felis mollis ante, ac tincidunt lacus felis non
             erat. Suspendisse potenti."</p>
         </div>
-        <div class="col-lg-4">
+        {{-- [ANIMASI] Kolom kanan slide dari kiri --}}
+        <div class="col-lg-4" data-aos="fade-left" data-aos-offset="100" data-aos-delay="200">
             <h5 class="fw-bold mb-3">Video Kegiatan Kepala Dinas</h5>
             <div class="ratio ratio-16x9 rounded-3 shadow-sm">
                 <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=example" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -140,12 +152,14 @@
 </div>
 
 <!-- 3. Bagian Berita Terbaru (Tidak diubah) -->
-<div class="py-5" style="background-color: #ffffff;">
+{{-- [ANIMASI] Seluruh bagian berita fade-up --}}
+<div class="py-5" style="background-color: #ffffff;" data-aos="fade-up" data-aos-offset="100">
     <div class="container">
         <h2 class="section-title">Berita Terbaru</h2>
         
         @if($beritaUtama)
-        <div class="card mb-5 shadow-lg border-0">
+        {{-- [ANIMASI] Berita utama fade-up (sedikit delay) --}}
+        <div class="card mb-5 shadow-lg border-0" data-aos="fade-up" data-aos-delay="100">
             <div class="row g-0">
                 <div class="col-md-6">
                     @if($beritaUtama->gambar)
@@ -170,12 +184,14 @@
         @endif
 
         {{-- Berita Lainnya --}}
-        <div class="p-4 rounded-3" style="background-color: var(--primary-color);">
+        {{-- [ANIMASI] Wrapper berita lainnya fade-up --}}
+        <div class="p-4 rounded-3" style="background-color: var(--primary-color);" data-aos="fade-up" data-aos-delay="200">
             <h4 class="text-white fw-bold mb-3 text-center">Berita Lainnya</h4>
             <div class="row">
                 
                 @forelse($beritaLainnya->take(5) as $berita)
-                <div class="col-lg col-md-4 col-sm-6 mb-3 mb-lg-0">
+                {{-- [ANIMASI] Setiap kartu berita diberi animasi fade-up dengan delay bertingkat --}}
+                <div class="col-lg col-md-4 col-sm-6 mb-3 mb-lg-0" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 + 300 }}">
                     <div class="card card-news h-100">
                         @if($berita->gambar)
                             <img src="{{ asset('storage/' . $berita->gambar) }}" class="card-img-top" alt="{{ $berita->judul }}" style="height: 220px; object-fit: cover;">
@@ -202,3 +218,22 @@
 </div>
 
 @endsection
+
+{{-- [BARU] Tambahkan JS di akhir body (stack 'scripts' harus ada di layout.public) --}}
+@push('scripts')
+    {{-- [BARU] Tambahkan JS AOS (Animate On Scroll) --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    {{-- [BARU] Inisialisasi AOS --}}
+    <script>
+        // Tunggu hingga seluruh halaman (termasuk gambar) dimuat
+        window.addEventListener('load', function() {
+            AOS.init({
+                duration: 800,   // Durasi animasi dalam milidetik
+                once: false,     // [DIUBAH] Animasi terjadi setiap kali di-scroll (atas/bawah)
+                offset: 100,     // Jarak (px) dari bagian bawah layar sebelum animasi dimulai
+                easing: 'ease-out-cubic', // Jenis easing
+            });
+        });
+    </script>
+@endpush

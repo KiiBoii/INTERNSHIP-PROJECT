@@ -135,10 +135,12 @@
     <div class="row">
         
         <div class="col-lg-8">
-                            <div class="tab-pane fade show active" id="content-mandiri" role="tabpanel" aria-labelledby="tab-mandiri">
-                    <h2 class="section-title text-start ps-0 mb-4">Pelayanan Mandiri</h2>
-                    <p class="text-muted mb-4">Temukan informasi layanan yang Anda butuhkan melalui tautan di bawah ini.</p>
-                </div>
+            
+            {{-- [PERBAIKAN] Konten ini dipindahkan ke ATAS tab list, dan BUKAN bagian dari tab-pane --}}
+            <div>
+                <h2 class="section-title text-start ps-0 mb-4">Pelayanan Mandiri</h2>
+                <p class="text-muted mb-4">Temukan informasi layanan yang Anda butuhkan melalui tautan di bawah ini.</p>
+            </div>
             
             {{-- Navigasi Tabs: TIGA NAVIGASI UTAMA DI ATAS --}}
             <ul class="nav nav-pills nav-fill mb-4 p-2 bg-light rounded-3" id="serviceTabs" role="tablist">
@@ -304,20 +306,28 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Cek apakah ada parameter 'per_page' atau 'cari' di URL.
-        // Jika ada, itu berarti user melakukan pencarian/pagination di Tab Dokumen.
         const urlParams = new URLSearchParams(window.location.search);
         
+        let tabToActivateId;
+
         if (urlParams.has('cari') || urlParams.has('per_page')) {
-            // Aktifkan Tab Dokumen secara otomatis
-            const tabElement = document.getElementById('tab-dokumen');
-            if (tabElement) {
-                const tab = new bootstrap.Tab(tabElement);
-                tab.show();
-            }
+            // Jika ada parameter pencarian/pagination, buka tab 'Dokumen'
+            tabToActivateId = 'tab-dokumen';
+        } else {
+            // [PERBAIKAN] Jika tidak, buka tab 'Pusat Bantuan' sesuai permintaan Anda
+            tabToActivateId = 'tab-bantuan';
+        }
+
+        // Aktifkan tab yang sudah ditentukan
+        const tabElement = document.getElementById(tabToActivateId);
+        if (tabElement) {
+            const tab = new bootstrap.Tab(tabElement);
+            tab.show();
         }
 
         // Script untuk memastikan tombol di Tab "Pelayanan Mandiri" mengaktifkan Tab yang benar
+        // [CATATAN] Kode ini sepertinya tidak menargetkan apa pun di HTML Anda saat ini (karena Anda menggunakan <button>),
+        // tapi saya biarkan untuk jaga-jaga jika Anda menambah <a data-bs-toggle="pill"> di tempat lain.
         document.querySelectorAll('a[data-bs-toggle="pill"]').forEach(function(element) {
             element.addEventListener('click', function (event) {
                 event.preventDefault();
