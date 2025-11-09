@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
-use Illuminate\Http\Request; // <-- 1. IMPORT REQUEST
+use Illuminate\Http\Request; // <-- IMPORT REQUEST
 use Illuminate\Support\Facades\Storage;
 
 class SliderController extends Controller
@@ -20,22 +20,19 @@ class SliderController extends Controller
         'layanan'
     ];
 
-    /**
-     * Display a listing of the resource.
-     * === DIPERBARUI UNTUK FILTER ===
-     */
-    public function index(Request $request) // <-- 2. TAMBAHKAN Request $request
+
+    public function index(Request $request) // <--TAMBAHKAN Request $request
     {
         $query = Slider::query(); // Mulai query builder
 
-        // 3. Terapkan filter jika ada
+        // Terapkan filter jika ada
         if ($request->filled('halaman')) {
             $query->where('halaman', $request->halaman);
         }
 
         $sliders = $query->latest()->get();
         
-        // 4. Kirim $halamanList dan halaman yg dipilih ke view
+        //Kirim $halamanList dan halaman yg dipilih ke view
         return view('admin.slider.index', [
             'sliders' => $sliders,
             'halamanList' => $this->halamanList,
@@ -43,18 +40,14 @@ class SliderController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+ 
     public function create()
     {
         // Kirim daftar bidang yang sudah didefinisikan
         return view('admin.slider.create', ['bidangList' => $this->halamanList]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -74,18 +67,13 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slide berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+ 
     public function edit(Slider $slider)
     {
         $halamanList = $this->halamanList;
         return view('admin.slider.edit', compact('slider', 'halamanList'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Slider $slider)
     {
         $validated = $request->validate([
@@ -110,9 +98,7 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slide berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Slider $slider)
     {
         // Hapus gambar
@@ -126,9 +112,6 @@ class SliderController extends Controller
         return redirect()->route('slider.index')->with('success', 'Slide berhasil dihapus.');
     }
 
-    /**
-     * Toggle status visibilitas slider.
-     */
     public function toggleStatus(Slider $slider)
     {
         // Ganti status (dari true jadi false, atau false jadi true)

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User; // Import Model User
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; // Untuk hash password
-use Illuminate\Validation\Rule; // Import ini
+use Illuminate\Validation\Rule;
 
 class KaryawanController extends Controller
 {
@@ -16,20 +16,16 @@ class KaryawanController extends Controller
         'berita' => 'Admin Konten Berita',
         // Tambahkan role lain jika diperlukan di sini
     ];
-    // ======================================
 
-    /**
-     * Display a listing of the resource.
-     */
+
+
     public function index()
     {
         $karyawans = User::latest()->get(); // Ambil semua user
         return view('admin.karyawan.index', compact('karyawans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW ===
@@ -38,15 +34,13 @@ class KaryawanController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // 'confirmed' butuh field password_confirmation
+            'password' => 'required|string|min:8|confirmed', 
             // === PERUBAHAN: VALIDASI ROLE BERDASARKAN roleList ===
             'role' => ['required', Rule::in(array_keys($this->roleList))],
             // =======================================================
@@ -63,17 +57,12 @@ class KaryawanController extends Controller
         return redirect()->route('karyawan.index')->with('success', 'Admin/Karyawan berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $karyawan)
     {
         return view('admin.karyawan.show', compact('karyawan'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(User $karyawan)
     {
         // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW EDIT ===
@@ -81,9 +70,7 @@ class KaryawanController extends Controller
         return view('admin.karyawan.edit', compact('karyawan', 'roleList'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, User $karyawan)
     {
         $validated = $request->validate([
@@ -110,9 +97,7 @@ class KaryawanController extends Controller
         return redirect()->route('karyawan.index')->with('success', 'Data Admin/Karyawan berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(User $karyawan)
     {
         $karyawan->delete();

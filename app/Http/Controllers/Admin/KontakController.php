@@ -14,12 +14,12 @@ class KontakController extends Controller
      */
     public function index()
     {
-        // 1. Ambil semua data dari Model Kontak
+        // Ambil semua data dari Model Kontak
         //    Urutkan dari yang terbaru
         //    Bagi per 15 data per halaman (Paginasi)
         $pesanKontak = Kontak::latest()->paginate(15);
 
-        // 2. Kirim data (variabel $pesanKontak) ke view
+        // Kirim data (variabel $pesanKontak) ke view
         return view('admin.kontak.index', compact('pesanKontak'));
     }
 }
