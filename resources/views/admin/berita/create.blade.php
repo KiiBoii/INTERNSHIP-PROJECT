@@ -54,6 +54,19 @@
                     <small class="text-muted">Max 2MB. Format: JPG, PNG, GIF</small>
                 </div>
 
+                {{-- ▼▼▼ PERBARUAN: TAMBAHKAN BLOK INI ▼▼▼ --}}
+                <div class="mb-3">
+                    <label for="tag" class="form-label">Topik (Opsional)</label>
+                    <select class="form-select" id="tag" name="tag">
+                        <option value="" {{ old('tag') == '' ? 'selected' : '' }}>-- Tidak ada (Berita Biasa) --</option>
+                        <option value="info" {{ old('tag') == 'info' ? 'selected' : '' }}>Info</option>
+                        <option value="layanan" {{ old('tag') == 'layanan' ? 'selected' : '' }}>Layanan</option>
+                        <option value="kegiatan" {{ old('tag') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+                    </select>
+                    <small class="text-muted">Jika diisi, berita ini akan diprioritaskan di 'Topik Lainnya' pada halaman user.</small>
+                </div>
+                {{-- ▲▲▲ AKHIR PERBARUAN ▲▲▲ --}}
+
                 <button type="submit" class="btn btn-primary">Simpan Berita</button>
                 <a href="{{ route('berita.index') }}" class="btn btn-secondary ms-2">Batal</a>
             </form>

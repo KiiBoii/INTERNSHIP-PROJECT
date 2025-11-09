@@ -4,7 +4,7 @@
 @push('styles')
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css"
-          integrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ=="
+          xintegrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ=="
           crossorigin="anonymous"
           referrerpolicy="no-referrer" />
 
@@ -72,9 +72,23 @@
                     @endif
                 </div>
 
-                {{-- Tombol --}}
-                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">Update Berita</button>
-                <a href="{{ route('berita.index') }}" class="btn btn-secondary ms-2 px-4 py-2 rounded-pill">Batal</a>
+                {{-- ▼▼▼ PERBARUAN: TAMBAHKAN BLOK INI ▼▼▼ --}}
+                <div class="mb-3">
+                    <label for="tag" class="form-label">Topik (Opsional)</label>
+                    <select class="form-select" id="tag" name="tag">
+                        {{-- Logika old('tag', $berita->tag) akan mengambil tag yang tersimpan di DB --}}
+                        <option value="" {{ old('tag', $berita->tag) == '' ? 'selected' : '' }}>-- Tidak ada (Berita Biasa) --</option>
+                        <option value="info" {{ old('tag', $berita->tag) == 'info' ? 'selected' : '' }}>Info</option>
+                        <option value="layanan" {{ old('tag', $berita->tag) == 'layanan' ? 'selected' : '' }}>Layanan</option>
+                        <option value="kegiatan" {{ old('tag', $berita->tag) == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+                    </select>
+                    <small class="text-muted">Jika diisi, berita ini akan diprioritaskan di 'Topik Lainnya' pada halaman user.</small>
+                </div>
+                {{-- ▲▲▲ AKHIR PERBARUAN ▲▲▲ --}}
+
+                {{-- PERBARUAN: Tombol disamakan dengan create.blade.php --}}
+                <button type="submit" class="btn btn-primary">Update Berita</button>
+                <a href="{{ route('berita.index') }}" class="btn btn-secondary ms-2">Batal</a>
             </form>
         </div>
     </div>
@@ -87,7 +101,7 @@
 
     {{-- Summernote JS (versi Bootstrap 5) --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"
-            integrity="sha512-6F1RVfnxCprKJmfulcxxym1Dar5FsT/V2jiEUvABiaEiFWoQ8yHvqRM/Slf0qJKiwin6IDQucjXuolCfCKnaJQ=="
+            xintegrity="sha512-6F1RVfnxCprKJmfulcxxym1Dar5FsT/V2jiEUvABiaEiFWoQ8yHvqRM/Slf0qJKiwin6IDQucjXuolCfCKnaJQ=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"></script>
 

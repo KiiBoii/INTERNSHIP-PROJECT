@@ -68,6 +68,7 @@ Route::resource('dokumen', DokumenController::class)
 
         
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/admin/dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.dashboard.chartData');
         
         Route::resource('galeri', GaleriController::class);
         Route::resource('pengumuman', PengumumanController::class);

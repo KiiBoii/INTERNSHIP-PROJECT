@@ -20,16 +20,15 @@ class Berita extends Model
         'isi',
         'gambar',
         'user_id',
+        'tag', // <-- ▼▼▼ PERBARUAN: Tambahkan 'tag' di sini
     ];
 
     /**
-     * === 1. TAMBAHKAN FUNGSI INI ===
      * Mendefinisikan relasi bahwa Berita 'dimiliki oleh' (belongsTo) satu User.
-     * Ini akan memperbaiki error 'RelationNotFoundException' Anda.
+     * (Relasi ini sudah benar dari kode Anda)
      */
     public function user()
     {
-        // 'user_id' adalah foreign key di tabel 'beritas'
         return $this->belongsTo(User::class, 'user_id');
     }
 }

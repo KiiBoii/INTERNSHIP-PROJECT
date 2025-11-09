@@ -43,42 +43,31 @@
         margin: 1.5rem 0;
     }
 
-    /* Sidebar Berita Terkait */
+    /* Sidebar Berita Terkait / Topik */
     .sidebar-card {
         border: 1px solid #e0e0e0;
         border-radius: 12px;
     }
-    .related-news-item {
+    /* Style untuk daftar topik (menggunakan style dari berita.blade.php) */
+    .sidebar-card .list-unstyled a {
         display: flex;
         align-items: flex-start;
         text-decoration: none;
         color: #212529;
-        padding-bottom: 1rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #f0f0f0;
     }
-    .related-news-item:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
-    .related-news-item img {
-        width: 100px;
-        height: 80px;
+    .sidebar-card .list-unstyled img {
+        width: 70px;
+        height: 70px;
         object-fit: cover;
         border-radius: 8px;
-        margin-right: 1rem;
     }
-    .related-news-item h6 {
-        font-size: 0.95rem;
+    .sidebar-card .list-unstyled h6 {
+        font-size: 0.9rem;
+        line-height: 1.3;
         font-weight: 600;
-        line-height: 1.4;
-        margin-bottom: 0.25rem;
     }
-    .related-news-item .category {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        text-transform: uppercase;
+    .sidebar-card .list-unstyled .badge {
+        font-size: 0.7rem;
     }
 </style>
 @endpush
@@ -92,7 +81,8 @@
             <article>
                 <header class="article-header">
                     <div class="article-category">
-                        {{ $berita->kategori ?? 'Berita' }}
+                        {{-- PERBARUAN: Gunakan tag jika ada, jika tidak, 'Berita' --}}
+                        {{ $berita->tag ? ucfirst($berita->tag) : 'Berita' }}
                     </div>
                     
                     <h1 class="display-5 fw-bold my-3" style="color: var(--dark-blue);">
@@ -100,8 +90,8 @@
                     </h1>
                     
                     <div class="article-meta">
-                        {{-- Ganti 'Admin' dengan $berita->penulis jika ada --}}
-                        By <span class="author">Admin</span> | 
+                        {{-- ▼▼▼ PERBARUAN: Ambil nama user dari relasi ▼▼▼ --}}
+                        By <span class="author">{{ $berita->user->name ?? 'Admin' }}</span> | 
                         {{ $berita->created_at->format('d F Y, H:i') }} WIB
                     </div>
                 </header>
@@ -126,23 +116,41 @@
             --}}
             <div class="card sidebar-card">
                 <div class="card-body">
-                    <h5 class="fw-bold mb-4" style="color: var(--dark-blue);">Related News</h5>
+                    {{-- ▼▼▼ PERBARUAN: Judul dan Loop diubah ▼▼▼ --}}
+                    <h5 class="fw-bold mb-4" style="color: var(--dark-blue);">Topik Lainnya</h5>
                     
-                    @forelse($related_news as $related)
-                    <a href="{{ route('public.berita.detail', $related->id) }}" class="related-news-item">
-                        @if($related->gambar)
-                        <img src="{{ asset('storage/' . $related->gambar) }}" alt="{{ $related->judul }}">
-                        @else
-                        <img src="https://placehold.co/100x80/e0e0e0/999?text=Berita" alt="Placeholder">
-                        @endif
-                        <div>
-                            <span class="category">{{ $related->kategori ?? 'Berita' }}</span>
-                            <h6>{{ $related->judul }}</h6>
-                        </div>
-                    </a>
-                    @empty
-                    <p class="text-muted">Tidak ada berita terkait.</p>
-                    @endforelse
+                    <ul class="list-unstyled">
+                        {{-- Ganti $related_news menjadi $topik_lainnya --}}
+                        @forelse($topik_lainnya as $topik)
+                        <li class="mb-3 border-bottom pb-3">
+                            <a href="{{ route('public.berita.detail', $topik->id) }}" class="d-flex text-decoration-none text-dark">
+                                <img src="{{ $topik->gambar ? asset('storage/'. $topik->gambar) : 'https://placehold.co/70x70/e0e0e0/999?text=Topik' }}" 
+                                     alt="{{ $topik->judul }}" 
+                                     style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px;">
+                                <div class="ms-3">
+                                    {{-- Tambahkan badge tag --}}
+                                    <span class="badge 
+                                        @if($topik->tag == 'info') bg-info text-dark
+                                        @elseif($topik->tag == 'layanan') bg-success
+                                        @elseif($topik->tag == 'kegiatan') bg-warning text-dark
+                                        @endif
+                                        mb-1">
+                                        {{ ucfirst($topik->tag) }}
+                                    </span>
+                                    <h6 class="mb-1">
+                                        {{ $topik->judul }}
+                                    </h6>
+                                    <small class="text-muted">{{ $topik->created_at->format('d F Y') }}</small>
+                                </div>
+                            </a>
+                        </li>
+                        @empty
+                        <li class="mb-3 text-muted small">
+                            Belum ada topik lainnya.
+                        </li>
+                        @endforelse
+                    </ul>
+                    {{-- ▲▲▲ AKHIR PERBARUAN ▲▲▲ --}}
                 </div>
             </div>
         </div>

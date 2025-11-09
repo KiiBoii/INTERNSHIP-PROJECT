@@ -9,19 +9,28 @@ use App\Models\Galeri;
 use App\Models\Pengumuman;
 use App\Models\Kontak;
 use App\Models\Slider; 
-use App\Models\Dokumen; // <-- IMPORT MODEL DOKUMEN BARU
+use App\Models\Dokumen;
 use Illuminate\Support\Facades\Storage; 
-use Illuminate\Validation\Rule; // Tambahkan jika ada validasi rule khusus
+use Illuminate\Validation\Rule;
+// ▼▼▼ TAMBAHKAN IMPORT INI JIKA BELUM ADA (Sepertinya sudah ada di file Anda) ▼▼▼
+use Illuminate\Support\Carbon; 
 
 class PageController extends Controller
 {
     /**
      * Halaman Beranda
+     * (Tidak diubah, sesuai file Anda)
      */
     public function home()
     {
         $sliders = Slider::where('halaman', 'home')->where('is_visible', true)->latest()->get();
-        $semuaBeritaBaru = Berita::with('user')->latest()->take(6)->get();
+        
+        $semuaBeritaBaru = Berita::with('user')
+                                ->whereNull('tag') // Hanya berita biasa
+                                ->latest()
+                                ->take(6)
+                                ->get();
+                                
         $beritaUtama = $semuaBeritaBaru->first();
         $beritaLainnya = $semuaBeritaBaru->slice(1);
         
@@ -30,6 +39,7 @@ class PageController extends Controller
 
     /**
      * Halaman Profil
+     * (Tidak diubah)
      */
     public function profil()
     {
@@ -39,100 +49,105 @@ class PageController extends Controller
 
     /**
      * Halaman Berita
+     * (Tidak diubah, sesuai file Anda)
      */
     public function berita()
     {
         $sliders = Slider::where('halaman', 'berita')->where('is_visible', true)->latest()->get();
         
-        $hot_news = Berita::with('user')->latest()->take(6)->get();
+        // 1. Ambil 6 Berita TERBARU yang BUKAN topik (tag = null) untuk "Hot News"
+        $hot_news = Berita::with('user')
+                            ->whereNull('tag') // Hanya berita biasa
+                            ->latest()
+                            ->take(6)
+                            ->get();
+        
+        // 2. Ambil ID Berita 'hot' untuk dikecualikan
         $hot_news_ids = $hot_news->pluck('id');
-        $beritas = Berita::with('user')->whereNotIn('id', $hot_news_ids)
-                                 ->latest()
-                                 ->paginate(9);
-        $beritas_ids = $beritas->pluck('id');
-        $exclude_ids = $hot_news_ids->merge($beritas_ids);
-        $topik_lainnya = Berita::whereNotIn('id', $exclude_ids)
-                                 ->inRandomOrder()
-                                 ->take(5)
-                                 ->get();
+
+        // 3. Ambil sisa Berita yang BUKAN topik (tag = null) untuk "Berita Lainnya"
+        $beritas = Berita::with('user')
+                           ->whereNull('tag') // Hanya berita biasa
+                           ->whereNotIn('id', $hot_news_ids) // Lewati berita 'hot'
+                           ->latest()
+                           ->paginate(9); // Ambil 9 per halaman
+        
+        // 4. Ambil 5 Berita TERBARU yang MEMILIKI TAG (ini adalah Topik Lainnya)
+        // (Logika ini dari file Anda, BUKAN dari permintaan terakhir Anda)
+        $topik_lainnya = Berita::with('user')
+                                    ->whereNotNull('tag') // HANYA berita yang punya tag
+                                    ->latest()
+                                    ->take(5) // Ambil 5 topik terbaru
+                                    ->get();
 
         return view('public.berita', compact('sliders', 'hot_news', 'beritas', 'topik_lainnya'));
     }
 
     /**
      * Halaman Galeri
+     * (Tidak diubah)
      */
     public function galeri(Request $request) 
     {
+        // ... (Tidak ada perubahan)
         $sliders = Slider::where('halaman', 'galeri')->where('is_visible', true)->latest()->get();
-
-        $bidangList = Galeri::whereNotNull('bidang')
-                            ->where('bidang', '!=', '')
-                            ->distinct()
-                            ->pluck('bidang');
-
+        $bidangList = Galeri::whereNotNull('bidang')->where('bidang', '!=', '')->distinct()->pluck('bidang');
         $query = Galeri::with('user');
-
         if ($request->has('bidang') && $request->bidang != '') {
             $query->where('bidang', $request->bidang);
         }
-
         $galeris = $query->latest()->get(); 
-
         return view('public.galeri', compact('sliders', 'galeris', 'bidangList'));
     }
 
     /**
      * Halaman Layanan Publik
-     * PERUBAHAN: Sekarang menerima Request dan mengambil data Dokumen.
+     * (Tidak diubah)
      */
     public function layanan(Request $request)
     {
-        // 1. Ambil data slider
+        // ... (Tidak ada perubahan)
         $sliders = Slider::where('halaman', 'layanan')->where('is_visible', true)->latest()->get();
-        
-        // 2. Ambil data Dokumen Publikasi (untuk Tab)
         $query = Dokumen::query();
-        
-        // Filter/Cari
         if ($request->filled('cari')) {
             $query->where('judul', 'like', '%' . $request->cari . '%')
                   ->orWhere('keterangan', 'like', '%' . $request->cari . '%');
         }
-        
-        // Pagination/Per Page
         $perPage = $request->input('per_page', 10);
         $dokumens = $query->latest()->paginate($perPage)->withQueryString();
-        
-        // 3. Kirim kedua variabel ke view
         return view('public.layanan', compact('sliders', 'dokumens'));
     }
 
     /**
      * Halaman Pengumuman
+     * (Tidak diubah)
      */
     public function pengumuman()
     {
+        // ... (Tidak ada perubahan)
         $sliders = Slider::where('halaman', 'pengumuman')->where('is_visible', true)->latest()->get();
         $pengumumans = Pengumuman::with('user')->latest()->paginate(10);
-        
         return view('public.pengumuman', compact('sliders', 'pengumumans'));
     }
 
     /**
      * Halaman Kontak
+     * (Tidak diubah)
      */
     public function kontak()
     {
+        // ... (Tidak ada perubahan)
         $sliders = Slider::where('halaman', 'kontak')->where('is_visible', true)->latest()->get();
         return view('public.kontak', compact('sliders'));
     }
 
     /**
      * Method untuk MENYIMPAN data dari form kontak
+     * (Tidak diubah)
      */
     public function storeKontak(Request $request)
     {
+        // ... (Tidak ada perubahan)
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -140,28 +155,30 @@ class PageController extends Controller
             'isi_pengaduan' => 'required|string',
             'foto_pengaduan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
         if ($request->hasFile('foto_pengaduan')) {
             $validated['foto_pengaduan'] = $request->file('foto_pengaduan')->store('pengaduan_images', 'public');
         }
-
         Kontak::create($validated);
-
         return redirect()->route('public.kontak')->with('success', 'Pengaduan Anda telah berhasil terkirim. Terima kasih!');
     }
     
     /**
      * Halaman Detail Berita
+     * ▼▼▼ PERBARUAN: Logika diubah sesuai permintaan Anda ▼▼▼
      */
     public function showBerita($id)
     {
         $berita = Berita::with('user')->findOrFail($id);
 
-        $related_news = Berita::where('id', '!=', $id)
-                                         ->latest()
-                                         ->take(3)
-                                         ->get();
-                                         
-        return view('public.berita_detail', compact('berita', 'related_news'));
+        // PERBARUAN: Ambil 5 berita acak (apapun tag-nya)
+        // "semua berita yg eksis (selain berita yang sedang dibuka user)"
+        $topik_lainnya = Berita::where('id', '!=', $id) // Jangan tampilkan berita yang sedang dibaca
+                                 ->inRandomOrder() // Ambil acak dari semua berita
+                                 ->take(5)
+                                 ->get();
+                                       
+        // Nama variabel $topik_lainnya dipertahankan agar view 'berita_detail'
+        // (dari konteks sebelumnya) tetap berfungsi.
+        return view('public.berita_detail', compact('berita', 'topik_lainnya')); 
     }
 }

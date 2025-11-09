@@ -137,13 +137,15 @@
 <div class="container my-5">
 
     {{-- 
-        ===== BAGIAN DIPERBARUI =====
-        data-bs-pause="false" -> Tidak berhenti saat hover
-        data-bs-interval="3000" -> Pindah slide setiap 3 detik
+        ===== BAGIAN SLIDER (BERITA UNGGULAN) =====
+        Logika ini sekarang mengambil dari $hot_news (berita biasa terbaru)
+        Anda mungkin ingin menggantinya agar mengambil dari $sliders
+        tapi saya biarkan dulu sesuai kode asli Anda.
     --}}
     <div id="newsSlider" class="carousel slide mb-5 news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
         <div class="carousel-indicators">
+            {{-- PERHATIAN: $hot_news sekarang BUKAN data slider, tapi data berita --}}
             @foreach($hot_news ?? [] as $hot)
                 <button type="button" data-bs-target="#newsSlider" data-bs-slide-to="{{ $loop->index }}" 
                         class="@if($loop->first) active @endif" 
@@ -185,14 +187,15 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
+    
     <div class="row">
 
         <div class="col-lg-8">
 
             <h2 class="fw-bold mb-3" style="color: var(--dark-blue);">HOT NEWS</h2>
             
+            {{-- Grid "HOT NEWS" (Tidak berubah, ini sudah mengambil $hot_news) --}}
             <div class="row mb-4">
-                
                 <div class="col-lg-4 mb-3 hot-news-large"> 
                     @if(isset($hot_news[0]))
                         @php $hot = $hot_news[0]; @endphp
@@ -207,7 +210,6 @@
                         <div class="card-placeholder"><span>Berita 1</span></div>
                     @endif
                 </div>
-
                 <div class="col-lg-8">
                     <div class="row">
                         <div class="col-md-6 mb-3 hot-news-small-top">
@@ -289,6 +291,7 @@
 
             <h2 class="section-title">BERITA LAINNYA</h2>
             
+            {{-- Grid "BERITA LAINNYA" (Tidak berubah, ini sudah mengambil $beritas) --}}
             <div class="row">
                 @forelse($beritas as $berita)
                 <div class="col-md-4 mb-4">
@@ -319,30 +322,52 @@
                 @endforelse
             </div>
 
-        </div> <div class="col-lg-4">
+        </div> 
+        
+        <div class="col-lg-4">
             <div class="card" style="border: 1px solid #e0e0e0;">
                 <div class="card-body">
                     <h5 class="fw-bold mb-3" style="color: var(--dark-blue);">TOPIK LAINNYA</h5>
                     
+                    {{-- ▼▼▼ PERBARUAN: Ganti @for dengan @forelse ▼▼▼ --}}
                     <ul class="list-unstyled">
-                        @for ($i = 0; $i < 5; $i++)
+                        @forelse($topik_lainnya as $topik)
                         <li class="mb-3 border-bottom pb-3">
-                            <a href="#" class="d-flex text-decoration-none text-dark">
-                                <img src="https://placehold.co/70x70/333/555?text=Topik" alt="Placeholder" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px;">
+                            <a href="{{ route('public.berita.detail', $topik->id) }}" class="d-flex text-decoration-none text-dark">
+                                <img src="{{ $topik->gambar ? asset('storage/'. $topik->gambar) : 'https://placehold.co/70x70/e0e0e0/999?text=Topik' }}" 
+                                     alt="{{ $topik->judul }}" 
+                                     style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px;">
                                 <div class="ms-3">
+                                    {{-- Tambahkan badge tag --}}
+                                    <span class="badge 
+                                        @if($topik->tag == 'info') bg-info text-dark
+                                        @elseif($topik->tag == 'layanan') bg-success
+                                        @elseif($topik->tag == 'kegiatan') bg-warning text-dark
+                                        @endif
+                                        mb-1" style="font-size: 0.7rem;">
+                                        {{ ucfirst($topik->tag) }}
+                                    </span>
                                     <h6 class="mb-1" style="font-size: 0.9rem; line-height: 1.3;">
-                                        Ini adalah placeholder untuk topik lainnya
+                                        {{ $topik->judul }}
                                     </h6>
-                                    <small class="text-muted">04/11/2025</small>
+                                    <small class="text-muted">{{ $topik->created_at->format('d F Y') }}</small>
                                 </div>
                             </a>
                         </li>
-                        @endfor
+                        @empty
+                        <li class="mb-3 text-muted small">
+                            Belum ada topik lainnya yang dipublikasikan.
+                        </li>
+                        @endforelse
                     </ul>
+                    {{-- ▲▲▲ AKHIR PERBARUAN ▲▲▲ --}}
 
                 </div>
             </div>
-        </div> </div> <div class="d-flex justify-content-center mt-4">
+        </div> 
+    </div> 
+    
+    <div class="d-flex justify-content-center mt-4">
         {!! $beritas->links() !!}
     </div>
     

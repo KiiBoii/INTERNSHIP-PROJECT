@@ -5,13 +5,12 @@
     <h3 class="mb-4">Dashboard Admin</h3>
 
     <div class="row">
-        {{-- Card Statistik --}}
+        {{-- Card Statistik (Tidak Berubah) --}}
         <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-primary text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            {{-- Ganti angka statis dengan variabel --}}
                             <div class="fs-5 fw-bold">{{ $totalBerita }}</div>
                             <div class="text-uppercase small">Berita</div>
                         </div>
@@ -27,15 +26,10 @@
             <div class="card bg-success text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            {{-- Ganti angka statis dengan variabel --}}
-                            <div class="fs-5 fw-bold">{{ $totalGaleri }}</div>
-                            <div class="text-uppercase small">Galeri Foto</div>
-                        </div>
-                        <i class="bi bi-images fs-2"></i>
+                        <div><div class="fs-5 fw-bold">{{ $totalGaleri }}</div><div class="text-uppercase small">Galeri Foto</div></div><i class="bi bi-images fs-2"></i>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
+                 <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
                     <a href="{{ route('galeri.index') }}" class="text-white text-decoration-none small stretched-link">Lihat Detail <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
@@ -44,15 +38,10 @@
             <div class="card bg-warning text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            {{-- Ganti angka statis dengan variabel --}}
-                            <div class="fs-5 fw-bold">{{ $totalPengaduan }}</div>
-                            <div class="text-uppercase small">Pengaduan</div>
-                        </div>
-                        <i class="bi bi-chat-left-text fs-2"></i>
+                        <div><div class="fs-5 fw-bold">{{ $totalPengaduan }}</div><div class="text-uppercase small">Pengaduan</div></div><i class="bi bi-chat-left-text fs-2"></i>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
+                 <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
                     <a href="{{ route('pengaduan.index') }}" class="text-white text-decoration-none small stretched-link">Lihat Detail <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
@@ -61,15 +50,10 @@
             <div class="card bg-info text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            {{-- Ganti angka statis dengan variabel --}}
-                            <div class="fs-5 fw-bold">{{ $totalPengumuman }}</div>
-                            <div class="text-uppercase small">Pengumuman</div>
-                        </div>
-                        <i class="bi bi-megaphone fs-2"></i>
+                        <div><div class="fs-5 fw-bold">{{ $totalPengumuman }}</div><div class="text-uppercase small">Pengumuman</div></div><i class="bi bi-megaphone fs-2"></i>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
+                 <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
                     <a href="{{ route('pengumuman.index') }}" class="text-white text-decoration-none small stretched-link">Lihat Detail <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
@@ -80,32 +64,75 @@
         {{-- Grafik --}}
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
-                <div class="card-header">Grafik Berita Dibuat (6 Bulan Terakhir)</div>
+                <div class="card-header">
+                    <span id="chartTitle" class="fw-bold">Grafik Berita Bulanan (Tahun {{ $currentYear }})</span>
+                    
+                    <div class="row g-2 mt-2">
+                        <div class="col-md-4">
+                            <label for="chartFilterType" class="form-label small">Tipe Filter</label>
+                            <select class="form-select form-select-sm" id="chartFilterType">
+                                <option value="bulanan" selected>Bulanan (per Tahun)</option>
+                                <option value="harian">Harian (per Bulan)</option>
+                                <option value="tahunan">Tahunan (Semua)</option>
+                            </select>
+                        </div>
+                        
+                        {{-- Wrapper untuk dropdown Bulan --}}
+                        <div class="col-md-3" id="monthFilterWrapper" style="display: none;">
+                            <label for="chartMonth" class="form-label small">Bulan</label>
+                            <select class="form-select form-select-sm" id="chartMonth">
+                                
+                                {{-- ▼▼▼ PERBAIKAN: Ganti @for dengan @foreach ▼▼▼ --}}
+                                @foreach ($availableMonths as $month)
+                                    <option value="{{ $month['value'] }}" {{ $month['value'] == $currentMonth ? 'selected' : '' }}>
+                                        {{ $month['name'] }}
+                                    </option>
+                                @endforeach
+                                {{-- ▲▲▲ AKHIR PERBAIKAN ▲▲▲ --}}
+
+                            </select>
+                        </div>
+
+                        {{-- Wrapper untuk dropdown Tahun --}}
+                        <div class="col-md-3" id="yearFilterWrapper">
+                            <label for="chartYear" class="form-label small">Tahun</label>
+                            <select class="form-select form-select-sm" id="chartYear">
+                                @foreach ($availableYears as $year)
+                                    <option value="{{ $year }}" {{ $year == $currentYear ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary btn-sm w-100" id="applyChartFilter">Lihat</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="card-body" style="position: relative; height: 350px;">
                     <canvas id="contentChart"></canvas> 
                 </div>
             </div>
         </div>
 
-        {{-- === KARTU AKTIVITAS DIPERBARUI === --}}
+        {{-- Kartu Aktivitas (Tidak Berubah) --}}
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">Aktivitas Terbaru</div>
                 <div class="card-body">
-                    {{-- Ganti <ul> statis dengan loop dinamis --}}
                     <ul class="list-group list-group-flush">
                         @forelse($recentActivities as $activity)
                             <li class="list-group-item d-flex align-items-center">
                                 <i class="bi {{ $activity->icon }} fs-4 text-primary me-3"></i>
                                 <div>
                                     <a href="{{ $activity->route }}" class="text-decoration-none text-dark stretched-link">
-                                        {{-- Tampilkan nama user (dari $activity->userName) --}}
                                         <strong>{{ $activity->userName }}</strong> 
                                         {{ $activity->jenis_aktivitas == 'Pengaduan Baru' ? 'mengirim' : 'menambahkan' }} 
                                         <em>{{ Str::limit($activity->judul_aktivitas, 35) }}</em>
                                     </a>
                                     <small class="d-block text-muted">
-                                        {{-- Menampilkan waktu (misal: "5 menit yang lalu") --}}
                                         {{ $activity->created_at->diffForHumans() }} 
                                     </small>
                                 </div>
@@ -119,63 +146,126 @@
                 </div>
             </div>
         </div>
-        {{-- === AKHIR KARTU AKTIVITAS === --}}
     </div>
 
 </div>
 @endsection
 
+{{-- Skrip JavaScript (Tidak Berubah dari kode sebelumnya, sudah benar) --}}
 @push('scripts')
-{{-- 1. Load Chart.js (PENTING) --}}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
-        // Mengambil canvas
+        // --- 1. Inisialisasi Elemen ---
         const ctx = document.getElementById('contentChart').getContext('2d');
+        const chartTitle = document.getElementById('chartTitle');
         
-        // 2. Mengambil data dari Controller (Blade -> JS)
-        const labels = {!! json_encode($chartLabels) !!};
-        const chartData = {!! json_encode($chartData) !!};
+        // Elemen Filter Baru
+        const filterTypeSelect = document.getElementById('chartFilterType');
+        const monthSelect = document.getElementById('chartMonth');
+        const yearSelect = document.getElementById('chartYear');
+        const monthWrapper = document.getElementById('monthFilterWrapper');
+        const yearWrapper = document.getElementById('yearFilterWrapper');
+        const applyButton = document.getElementById('applyChartFilter');
 
-        // 3. Konfigurasi data chart
-        const data = {
-            labels: labels,
-            datasets: [{
-                label: 'Jumlah Berita Dibuat',
-                data: chartData, // <-- Data dinamis
-                fill: true,
-                borderColor: 'rgb(0, 123, 255)',
-                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                tension: 0.1
-            }]
-        };
+        // --- 2. Ambil Data AWAL (dari render Blade) ---
+        const initialLabels = {!! json_encode($chartLabels) !!};
+        const initialData = {!! json_encode($chartData) !!};
 
-        // 4. Konfigurasi opsi chart
-        const config = {
+        // --- 3. Konfigurasi Awal Chart ---
+        const chartConfig = {
             type: 'line',
-            data: data,
+            data: {
+                labels: initialLabels,
+                datasets: [{
+                    label: 'Jumlah Berita Dibuat',
+                    data: initialData,
+                    fill: true,
+                    borderColor: 'rgb(0, 123, 255)',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.1
+                }]
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
-                        // Memastikan sumbu Y hanya menampilkan angka bulat (1, 2, 3)
-                        ticks: {
-                            stepSize: 1 
-                        }
+                        ticks: { stepSize: 1 } // Hanya angka bulat
                     }
                 }
             }
         };
 
-        // 5. Membuat chart
-        const myChart = new Chart(
-            ctx,
-            config
-        );
+        // --- 4. Buat Chart (simpan di variabel global 'myChart') ---
+        let myChart = new Chart(ctx, chartConfig);
+
+        // --- 5. Fungsi untuk Update Chart (AJAX) ---
+        async function fetchAndUpdateChart() {
+            // Ambil nilai filter saat ini
+            const filter = filterTypeSelect.value;
+            const month = monthSelect.value;
+            const year = yearSelect.value;
+
+            // Buat query string
+            const queryParams = new URLSearchParams({
+                filter: filter,
+                month: month,
+                year: year
+            });
+            
+            try {
+                // Tampilkan status loading
+                chartTitle.textContent = 'Memuat data...';
+                applyButton.disabled = true; // Nonaktifkan tombol saat loading
+                
+                // Panggil endpoint controller
+                const response = await fetch(`{{ route('admin.dashboard.chartData') }}?${queryParams}`);
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data dari server.');
+                }
+                
+                const newData = await response.json();
+
+                // Perbarui data dan judul di chart
+                myChart.data.labels = newData.labels;
+                myChart.data.datasets[0].data = newData.data;
+                myChart.update();
+                chartTitle.textContent = newData.title; // Ambil judul dinamis dari controller
+
+            } catch (error) {
+                console.error('Error fetching chart data:', error);
+                chartTitle.textContent = 'Gagal memuat data chart.';
+            } finally {
+                applyButton.disabled = false; // Aktifkan kembali tombol
+            }
+        }
+
+        // --- 6. Event Listener untuk Tombol Terapkan ---
+        applyButton.addEventListener('click', fetchAndUpdateChart);
+
+        // --- 7. Event Listener untuk Mengatur Tampilan Filter ---
+        filterTypeSelect.addEventListener('change', function () {
+            const selectedFilter = this.value;
+            
+            if (selectedFilter === 'harian') {
+                // Harian: Tampilkan Bulan dan Tahun
+                monthWrapper.style.display = 'block';
+                yearWrapper.style.display = 'block';
+            } else if (selectedFilter === 'bulanan') {
+                // Bulanan: Sembunyikan Bulan, Tampilkan Tahun
+                monthWrapper.style.display = 'none';
+                yearWrapper.style.display = 'block';
+            } else if (selectedFilter === 'tahunan') {
+                // Tahunan: Sembunyikan Bulan dan Tahun
+                monthWrapper.style.display = 'none';
+                yearWrapper.style.display = 'none';
+            }
+        });
+
     });
 </script>
 @endpush
