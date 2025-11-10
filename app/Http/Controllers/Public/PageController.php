@@ -97,15 +97,24 @@ class PageController extends Controller
     /**
      * Halaman Galeri
      */
-    public function galeri(Request $request) 
+ public function galeri(Request $request) 
     {
         $sliders = Slider::where('halaman', 'galeri')->where('is_visible', true)->latest()->get();
         $bidangList = Galeri::whereNotNull('bidang')->where('bidang', '!=', '')->distinct()->pluck('bidang');
+        
         $query = Galeri::with('user');
+
         if ($request->has('bidang') && $request->bidang != '') {
             $query->where('bidang', $request->bidang);
         }
-        $galeris = $query->latest()->get(); 
+
+        // ▼▼▼ PERUBAHAN DI SINI ▼▼▼
+        // Mengganti ->get() menjadi ->paginate() agar paginasi di view berfungsi.
+        // Saya set 9 item per halaman, Anda bisa ubah angkanya.
+        // $galeris = $query->latest()->get(); // <-- Kode lama
+        $galeris = $query->latest()->paginate(9)->withQueryString(); // <-- Kode baru
+        // ▲▲▲ AKHIR PERUBAHAN ▲▲▲
+
         return view('public.galeri', compact('sliders', 'galeris', 'bidangList'));
     }
 

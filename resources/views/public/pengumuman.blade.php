@@ -46,6 +46,103 @@
         font-size: 1.1rem; /* Subtitel dibuat lebih besar */
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
+
+    /* ▼▼▼ [BARU] CSS KUSTOM UNTUK PAGINASI (GAYA LINGKARAN) ▼▼▼ */
+    /* Wrapper untuk memberi scope pada style kita */
+    .pagination-circles {
+        margin-top: 1.5rem;
+    }
+
+    /* Container utama pagination */
+    .pagination-circles .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem; /* Jarak antar item (panah dan lingkaran) */
+        padding-left: 0;
+        list-style: none;
+        margin: 0;
+    }
+
+    /* Styling untuk SEMUA item, termasuk angka dan panah */
+    .pagination-circles .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px; /* Ukuran lingkaran */
+        height: 42px; /* Ukuran lingkaran */
+        border-radius: 50%; /* Membuatnya bulat */
+        border: 1px solid #e0e0e0; /* Border abu-abu muda */
+        background-color: #f0f0f0; /* Latar belakang abu-abu seperti gambar */
+        color: #333; /* Warna angka */
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        position: relative; /* Diperlukan untuk ::after */
+    }
+
+    /* Styling KHUSUS untuk Panah (Previous/Next) */
+    .pagination-circles .page-item:first-child .page-link,
+    .pagination-circles .page-item:last-child .page-link {
+        background-color: transparent; /* Panah tidak punya background lingkaran */
+        border: none; /* Panah tidak punya border */
+        color: #000; /* Warna panah hitam seperti di gambar */
+        font-size: 1.5rem; /* Membuat panah lebih besar */
+    }
+
+    /* Panah yang dinonaktifkan */
+    .pagination-circles .page-item.disabled:first-child .page-link,
+    .pagination-circles .page-item.disabled:last-child .page-link {
+        color: #ccc; /* Panah disabled jadi abu-abu */
+        background-color: transparent;
+        border: none;
+    }
+
+    /* Styling untuk Angka Halaman yang di-hover */
+    .pagination-circles .page-item:not(:first-child):not(:last-child):not(.active) .page-link:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+
+    /* Styling untuk Halaman AKTIF (seperti '2' di gambar) */
+    .pagination-circles .page-item.active .page-link {
+        transform: scale(1.15); /* Sedikit lebih besar */
+        background-color: #e0e0e0; /* Latar abu-abu sedikit lebih gelap */
+        border: 1px solid #a0a0a0; /* Border lebih tegas */
+        z-index: 1;
+    }
+
+    /* Underline untuk halaman AKTIF */
+    .pagination-circles .page-item.active {
+        position: relative;
+    }
+    .pagination-circles .page-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: -12px; /* Jarak underline dari lingkaran */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%; /* Lebar underline */
+        height: 4px; /* Ketebalan underline */
+        background-color: #b0b0b0; /* Warna underline abu-abu */
+        border-radius: 2px;
+    }
+
+    /* Styling untuk '...' (ellipsis) jika muncul */
+    .pagination-circles .page-item.disabled:not(:first-child):not(:last-child) span.page-link {
+        background-color: #f0f0f0;
+        border-color: #e0e0e0;
+        color: #333;
+    }
+
+    /* Sembunyikan teks "Previous" & "Next" dari screen reader */
+    .pagination-circles .page-link span[aria-hidden="true"] {
+        display: none;
+    }
+    .pagination-circles .page-link .visually-hidden {
+        display: none;
+    }
+    /* ▲▲▲ AKHIR CSS KUSTOM PAGINASI ▲▲▲ */
 </style>
 @endpush
 
@@ -151,9 +248,11 @@
             </div>
 
             <!-- Paginasi -->
-            <div class="d-flex justify-content-center mt-4">
-                {!! $pengumumans->links() !!}
+            {{-- ▼▼▼ [BARU] PAGINASI KUSTOM (GAYA LINGKARAN) ▼▼▼ --}}
+            <div class="pagination-circles mt-4">
+                {!! $pengumumans->withQueryString()->links() !!}
             </div>
+            {{-- ▲▲▲ AKHIR PAGINASI KUSTOM ▲▲▲ --}}
         </div>
     </div>
 </div>
