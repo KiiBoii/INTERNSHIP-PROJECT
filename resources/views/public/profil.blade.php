@@ -157,29 +157,37 @@
     <div class="container">
         <h2 class="section-title mb-5 text-center">Visi dan Misi</h2>
         <div class="row g-4 justify-content-center">
+            
+            {{-- ▼▼▼ [PERUBAHAN] BLOK VISI ▼▼▼ --}}
             <div class="col-md-5" data-aos="fade-right" data-aos-delay="100">
                 <div class="card h-100 shadow-sm border-0" style="border-top: 4px solid var(--primary-color);">
                     <div class="card-body p-4 text-center">
                         <i class="bi bi-eye-fill display-4 text-primary mb-3"></i>
                         <h4 class="fw-bold">VISI</h4>
-                        <p class="text-muted">"Terwujudnya Kesejahteraan Sosial Masyarakat di Provinsi Riau yang Berkeadilan dan Merata."</p>
+                        <p class="text-muted">Terwujudnya Riau yang BERDAYA SAING, SEJAHTERA, BERMARTABAT dan UNGGUL di Indonesia ( RIAU BERSATU)</p>
                     </div>
                 </div>
             </div>
+            {{-- ▲▲▲ AKHIR PERUBAHAN VISI ▲▲▲ --}}
+
+            {{-- ▼▼▼ [PERUBAHAN] BLOK MISI ▼▼▼ --}}
             <div class="col-md-5" data-aos="fade-left" data-aos-delay="200">
                 <div class="card h-100 shadow-sm border-0" style="border-top: 4px solid var(--primary-color);">
                     <div class="card-body p-4 text-center">
                         <i class="bi bi-bullseye display-4 text-primary mb-3"></i>
                         <h4 class="fw-bold">MISI</h4>
                         <ul class="list-unstyled text-muted text-start">
-                            <li>1. Meningkatkan kualitas pelayanan sosial.</li>
-                            <li>2. Mengembangkan program pemberdayaan sosial.</li>
-                            <li>3. Memperkuat jaring pengaman sosial.</li>
-                            <li>4. Meningkatkan partisipasi masyarakat dalam pembangunan.</li>
+                            <li>1. Mewujudkan Sumberdaya Manusia yang Beriman, Berkualitas dan Berdaya Saing melalui Pembangunan Manusia Seutuhnya</li>
+                            <li>2. Mewujudkan Pembangunan Infrastruktur Daerah yang merata dan Berwawasan Lingkungan</li>
+                            <li>3. Mewujudkan Pembangunan Ekonomi yang inklusif, Mandiri dan Berdaya Saing</li>
+                            <li>4. Mewujudkan Budaya Melayu sebagai Payung Negeri dan Mengembangkan Pariwisata yang Berdaya Saing</li>
+                            <li>5. Mewujudkan Tata Kelola Pemerintahan yang Baik dan Pelayanan Publik yang Prima Berbasis Teknologi Informasi.</li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {{-- ▲▲▲ AKHIR PERUBAHAN MISI ▲▲▲ --}}
+
         </div>
     </div>
 </div>
@@ -187,7 +195,7 @@
 
 <div class="container my-5 text-center" data-aos="zoom-in" data-aos-duration="1000">
     <h2 class="section-title mb-4">Struktur Organisasi</h2>
-    <img src="https://diskominfotik.riau.go.id/wp-content/uploads/2025/10/Struktur-Organisasi-Diskominfotik-01-Oktober-2025.png" class="img-fluid rounded-3 shadow-sm" alt="Struktur Organisasi Dinas Sosial Riau">
+    <img src="{{ asset('images/struktur_organisasi.jpg') }}" class="img-fluid rounded-3 shadow-sm" alt="Struktur Organisasi Dinas Sosial Riau">
     <p class="text-muted mt-3">Bagan Struktur Organisasi Dinas Sosial Provinsi Riau Tahun 2025</p>
 </div>
 

@@ -14,7 +14,6 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    {{-- Ini sudah benar, untuk menerima CSS dari create.blade.php --}}
     @stack('styles')
 
     <style>
@@ -49,17 +48,21 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Shadow lebih halus */
             z-index: 1000;
         }
+        
+        /* ▼▼▼ [PERUBAHAN] CSS HEADER SIDEBAR DISESUAIKAN UNTUK LOGO ▼▼▼ */
         .sidebar .sidebar-header {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem; /* Padding disesuaikan */
             margin-bottom: 1rem;
-            background-color: var(--primary-color); /* Latar belakang header sidebar */
+            background-color: var #ffff; /* Latar belakang header sidebar */
             border-bottom: 1px solid #dee2e6;
+            text-align: center; /* Logo di tengah */
         }
-        .sidebar .sidebar-header h4 {
-            color: #ffffff; /* Teks header jadi putih */
-            margin-bottom: 0;
-            font-weight: 600;
+        .sidebar .sidebar-header img {
+            max-height: 45px; /* Atur tinggi maksimum logo */
+            width: auto;
         }
+        /* ▲▲▲ AKHIR PERUBAHAN CSS ▲▲▲ */
+
 
         .sidebar .nav-link {
             font-weight: 500;
@@ -261,43 +264,52 @@
 <body>
     <div class="wrapper">
         <nav id="sidebar" class="sidebar">
+            
+            {{-- ▼▼▼ [PERUBAHAN] Variabel route dinamis dipindah ke sini ▼▼▼ --}}
+            @php
+$routeNamePrefix = 'admin.';
+            @endphp
+            
+            {{-- ▼▼▼ [PERUBAHAN] Header diubah menjadi logo ▼▼▼ --}}
             <div class="sidebar-header">
-                <h4>DINSOS RIAU</h4>
+                {{-- Logo sekarang mengarah ke dashboard yang sesuai --}}
+                <a href="{{ route($routeNamePrefix . 'dashboard') }}">
+                    <img src="{{ asset('images/logoweb.png') }}" alt="Logo Dinsos Riau">
+                </a>
             </div>
+            {{-- ▲▲▲ AKHIR PERUBAHAN ▲▲▲ --}}
+
             <ul class="list-unstyled components">
                 
                 {{-- ITEM INI SELALU TAMPIL --}}
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 1 ▼▼▼ --}}
-                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                    {{-- [PERBAIKAN] Menggunakan $routeNamePrefix --}}
+                    <a class="nav-link {{ request()->routeIs($routeNamePrefix . 'dashboard') ? 'active' : '' }}" href="{{ route($routeNamePrefix . 'dashboard') }}">
                         <i class="bi bi-grid-fill"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 2 ▼▼▼ --}}
-                    <a class="nav-link {{ request()->routeIs('admin.berita.*') ? 'active' : '' }}" href="{{ route('admin.berita.index') }}">
+                    {{-- [PERBAIKAN] Menggunakan $routeNamePrefix --}}
+                    <a class="nav-link {{ request()->routeIs($routeNamePrefix . 'berita.*') ? 'active' : '' }}" href="{{ route($routeNamePrefix . 'berita.index') }}">
                         <i class="bi bi-newspaper"></i> Berita
                     </a>
                 </li>
 
-                {{-- ▼▼▼ KONDISI DIMULAI DI SINI ▼▼▼ --}}
                 {{-- Tampilkan item ini HANYA JIKA BUKAN redaktur --}}
                 @unless(Auth::user()->role == 'redaktur')
                 
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 3 ▼▼▼ --}}
+                    {{-- Link ini sudah benar (hanya admin) --}}
                     <a class="nav-link {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}" href="{{ route('admin.galeri.index') }}">
                         <i class="bi bi-images"></i> Galeri Kegiatan
                     </a>
                 </li>
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 4 ▼▼▼ --}}
                     <a class="nav-link {{ request()->routeIs('admin.pengumuman.*') ? 'active' : '' }}" href="{{ route('admin.pengumuman.index') }}">
                         <i class="bi bi-megaphone-fill"></i> Pengumuman
                     </a>
                 </li>
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 5 ▼▼▼ --}}
                     <a class="nav-link {{ request()->routeIs('admin.pengaduan.*') ? 'active' : '' }}" href="{{ route('admin.pengaduan.index') }}">
                         <i class="bi bi-chat-left-text-fill"></i> Pengaduan Masuk
                     </a>
@@ -305,20 +317,17 @@
                 
                 
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 6 ▼▼▼ --}}
                     <a class="nav-link {{ request()->routeIs('admin.karyawan.*') ? 'active' : '' }}" href="{{ route('admin.karyawan.index') }}">
                         <i class="bi bi-people-fill"></i> Pengelolaan Admin
                     </a>
                 </li>
                 <li class="nav-item">
-                    {{-- ▼▼▼ PERBAIKAN 7 ▼▼▼ --}}
                     <a class="nav-link {{ request()->routeIs('admin.slider.*') ? 'active' : '' }}" href="{{ route('admin.slider.index') }}">
                         <i class="bi bi-collection-play-fill me-2"></i>
                         Manajemen Slider
                     </a>
                 </li>
                 <li class="nav-item">
-                    {{-- PERBAIKAN: Kode Anda sudah benar di sini, tidak perlu diubah --}}
                     <a class="nav-link {{ request()->routeIs('admin.dokumen.index') ? 'active' : '' }}" href="{{ route('admin.dokumen.index') }}">
                         <i class="bi bi-file-earmark-text-fill me-2"></i>
                         Dokumen Publikasi
@@ -332,7 +341,6 @@
 
             <ul class="list-unstyled components mt-auto pb-4">
                 <li class="logout-link">
-                    {{-- Link logout sudah benar (di luar grup 'admin.') --}}
                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
                         <button type="submit" class="nav-link btn btn-link text-start w-100">
@@ -364,30 +372,36 @@
                     <div class="dropdown">
                         <a class="d-block link-dark text-decoration-none dropdown-toggle" href="#" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             
-                            {{-- ▼▼▼ INI ADALAH BAGIAN YANG DIUBAH ▼▼▼ --}}
                             @if (Auth::user()->foto)
                                 <img src="{{ asset('storage/' . Auth::user()->foto) }}" 
                                      alt="{{ Auth::user()->name }}" 
                                      width="32" height="32" 
                                      class="rounded-circle" 
-                                     style="object-fit: cover;"> {{-- Tambahkan object-fit --}}
+                                     style="object-fit: cover;">
                             @else
-                                {{-- Fallback jika tidak ada foto --}}
                                 <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF" 
                                      alt="{{ Auth::user()->name }}" 
                                      width="32" height="32" 
                                      class="rounded-circle">
                             @endif
-                            {{-- ▲▲▲ AKHIR DARI BAGIAN YANG DIUBAH ▲▲▲ --}}
 
                         </a>
                         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+                            
+                            {{-- ▼▼▼ [PERBAIKAN] Tambahkan link Profile dinamis ▼▼▼ --}}
                             <li>
-                                {{-- Link logout sudah benar --}}
+                                <a class="dropdown-item" href="{{ route($routeNamePrefix . 'profile.edit') }}">
+                                    <i class="bi bi-person-circle me-2"></i> Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {{-- ▲▲▲ AKHIR PERBAIKAN ▲▲▲ --}}
+                            
+                            <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                                        Sign out
+                                        <i class="bi bi-box-arrow-right me-2"></i> Sign out
                                     </a>
                                 </form>
                             </li>
@@ -413,17 +427,10 @@
         </div>
     </div>
 
-    {{-- ▼▼▼ PERBARUAN UTAMA ADA DI SINI ▼▼▼ --}}
-
-    {{-- 1. Muat jQuery (WAJIB PALING PERTAMA) --}}
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-    {{-- 2. Muat Bootstrap JS (setelah jQuery) --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    {{-- 3. @stack('scripts') akan memuat Summernote JS dan skrip inisialisasi SETELAH jQuery dan Bootstrap dimuat --}}
     @stack('scripts') 
 
     <script>

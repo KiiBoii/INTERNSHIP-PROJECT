@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User; // Import Model User
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; // <-- DIPERLUKAN UNTUK FILTER
 use Illuminate\Support\Facades\Hash; // Untuk hash password
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage; // [BARU] Import Storage untuk mengelola file
+use Illuminate\Support\Facades\Storage; // Import Storage untuk mengelola file
 
 class KaryawanController extends Controller
 {
-    // === TAMBAHAN: DEFINISI DAFTAR ROLE ===
+    // === DEFINISI DAFTAR ROLE ===
     private $roleList = [
         'admin' => 'Admin Utama',
         'redaktur' => 'Admin Konten Berita',
@@ -19,14 +19,47 @@ class KaryawanController extends Controller
     ];
 
 
-
-    public function index()
+    /**
+     * [KODE DIPERBARUI]
+     * Menampilkan daftar karyawan dengan filter pencarian dan role.
+     */
+    public function index(Request $request) // <-- 1. Terima Request
     {
-        $karyawans = User::latest()->get(); // Ambil semua user
-        return view('admin.karyawan.index', compact('karyawans'));
+        $adminRoles = array_keys($this->roleList);
+        
+        // 2. Mulai query dasar (HANYA admin & redaktur)
+        $query = User::whereIn('role', $adminRoles);
+
+        // 3. Terapkan filter PENCARIAN (jika ada)
+        if ($request->filled('search')) {
+            $searchTerm = '%' . $request->search . '%';
+            // Mencari di kolom 'name' ATAU 'email'
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm)
+                  ->orWhere('email', 'like', $searchTerm);
+            });
+        }
+
+        // 4. Terapkan filter ROLE DROPDOWN (jika ada)
+        if ($request->filled('role_filter') && array_key_exists($request->role_filter, $this->roleList)) {
+            $query->where('role', $request->role_filter);
+        }
+
+        // 5. Eksekusi query dengan urutan terbaru
+        $karyawans = $query->latest()->get();
+
+        // 6. Kirim data ke view, termasuk data untuk mengisi form filter
+        return view('admin.karyawan.index', [
+            'karyawans' => $karyawans,
+            'roleList' => $this->roleList, // Untuk dropdown
+            'currentFilters' => $request->only(['search', 'role_filter']) // Untuk 'mengingat' nilai filter
+        ]);
     }
 
 
+    /**
+     * Menampilkan form untuk membuat karyawan baru.
+     */
     public function create()
     {
         // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW ===
@@ -36,6 +69,9 @@ class KaryawanController extends Controller
     }
 
 
+    /**
+     * Menyimpan karyawan baru ke database.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -55,8 +91,6 @@ class KaryawanController extends Controller
 
         // [BARU] Logika untuk menyimpan foto jika ada
         if ($request->hasFile('foto')) {
-            // Simpan file di 'storage/app/public/foto_karyawan'
-            // dan simpan path-nya (foto_karyawan/namafile.jpg) ke database
             $validated['foto'] = $request->file('foto')->store('foto_karyawan', 'public');
         }
 
@@ -66,12 +100,18 @@ class KaryawanController extends Controller
         return redirect()->route('admin.karyawan.index')->with('success', 'Admin/Karyawan berhasil ditambahkan.');
     }
 
+    /**
+     * Menampilkan detail spesifik karyawan.
+     */
     public function show(User $karyawan)
     {
         return view('admin.karyawan.show', compact('karyawan'));
     }
 
 
+    /**
+     * Menampilkan form untuk mengedit karyawan.
+     */
     public function edit(User $karyawan)
     {
         // === PERUBAHAN: KIRIM DAFTAR ROLE KE VIEW EDIT ===
@@ -80,6 +120,9 @@ class KaryawanController extends Controller
     }
 
 
+    /**
+     * Memperbarui data karyawan di database.
+     */
     public function update(Request $request, User $karyawan)
     {
         $validated = $request->validate([
@@ -119,6 +162,9 @@ class KaryawanController extends Controller
     }
 
 
+    /**
+     * Menghapus karyawan dari database.
+     */
     public function destroy(User $karyawan)
     {
         // [BARU] Hapus foto dari storage sebelum menghapus data user

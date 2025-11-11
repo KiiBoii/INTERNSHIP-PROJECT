@@ -198,10 +198,16 @@
             padding-top: 2rem;
             margin-top: 3rem; 
         }
+        
+        /* ▼▼▼ PERUBAHAN CSS DI SINI ▼▼▼ */
         .footer-center-content .logo-img {
             max-height: 70px; 
             margin-bottom: 1rem;
+            width: auto; /* [BARU] Menjaga rasio aspek logo */
+            border-radius: 0; /* [BARU] Menghapus paksa border radius */
         }
+        /* ▲▲▲ AKHIR PERUBAHAN CSS ▲▲▲ */
+        
         .footer-center-content .logo-text {
             color: #fff;
             font-weight: 600;
@@ -246,7 +252,7 @@
         <nav class="navbar navbar-expand-lg navbar-main sticky-top">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('public.home') }}">
-                    <img src="{{ asset('images/logo_warna.png') }}" alt="Logo Dinas Sosial Riau">
+                    <img src="{{ asset('images/logoweb.png') }}" alt="Logo Dinas Sosial Riau">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -263,20 +269,23 @@
                             <a class="nav-link {{ request()->routeIs('public.berita') ? 'active' : '' }}" href="{{ route('public.berita') }}">Berita</a>
                         </li>
                         
-                        {{-- ▼▼▼ INI BAGIAN YANG DIUBAH ▼▼▼ --}}
-<li class="nav-item dropdown">
-    <a class="nav-link {{ request()->routeIs('public.layanan') ? 'active' : '' }}" href="{{ route('public.layanan') }}#content-bantuan">
-        Layanan Publik
-    </a>
-    <ul class="dropdown-menu">
-        <li>
-            <a class="dropdown-item" href="{{ route('public.layanan') }}#content-dokumen">
-                Dokumen Publikasi
-            </a>
-        </li>
-    </ul>
-</li>
-                        {{-- ▲▲▲ AKHIR BAGIAN YANG DIUBAH ▲▲▲ --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link {{ request()->routeIs('public.layanan') ? 'active' : '' }}" href="{{ route('public.layanan') }}#content-bantuan">
+                                Layanan Publik
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-bantuan">
+                                        Pusat Bantuan (FAQ)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-dokumen">
+                                        Dokumen Publikasi
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('public.galeri') ? 'active' : '' }}" href="{{ route('public.galeri') }}">Galeri</a>
@@ -306,7 +315,7 @@
                     <ul class="profile-list">
                         <li>
                             <i class="bi bi-geo-alt-fill"></i>
-                            <span>Jl. Jend. Sudirman No. 123, Pekanbaru, Riau, 28282.</span>
+                            <span>Jl. Jend. Sudirman No.239, Simpang Empat, Kec. Pekanbaru Kota, Kota Pekanbaru, Riau 28126</span>
                         </li>
                         <li>
                             <i class="bi bi-envelope-fill"></i>
@@ -321,7 +330,7 @@
                 
                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                     <h5>LOKASI</h5>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.655254298878!2d101.44929817447432!3d0.5180173636858576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ad835f1604d3%3A0x700b4483c5414e68!2sDINAS%20KOMUNIKASI%20INFORMATIKA%20DAN%20STATISTIK%20PROVINSI%20RIAU!5e0!3m2!1sid!2sid!4v1762230007609!5m2!1sid!2sid" 
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63834.790313990954!2d101.43211943053905!3d0.48666664207182264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5aebcc272c77b%3A0x7b45c35bb6d8f1b8!2sDinas%20Sosial%20Provinsi%20Riau!5e0!3m2!1sid!2sid!4v1762851919935!5m2!1sid!2sid" 
                             class="map-placeholder" 
                             allowfullscreen="" 
                             loading="lazy" 
@@ -343,9 +352,10 @@
                     "Mewujudkan manajemen penyelenggaraan pemerintahan yang baik (good governance), efektif dan efisien, professional, transparan dan akuntabel."
                 </p>
                 
-                {{-- === BARIS YANG DIPERBARUI === --}}
-                <img src="{{ asset('images/logo.png') }}" alt="Logo Dinsos Riau" class="logo-img rounded-circle">
-                {{-- === AKHIR PERUBAHAN === --}}
+                {{-- ▼▼▼ PERUBAHAN HTML DI SINI ▼▼▼ --}}
+                {{-- Class "rounded-circle" telah dihapus --}}
+                <img src="{{ asset('images/logo_pemprov.png') }}" alt="Logo Pemprov Riau" class="logo-img">
+                {{-- ▲▲▲ AKHIR PERUBAHAN HTML ▲▲▲ --}}
 
                 <div class="logo-text">DINAS SOSIAL PROVINSI RIAU</div>
                 

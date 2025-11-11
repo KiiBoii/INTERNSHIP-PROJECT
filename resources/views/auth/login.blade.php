@@ -177,7 +177,7 @@
             <div class="col-lg-7 col-12 login-form-side">
                 <div class="login-form-wrapper text-center">
 
-                    <img src="https://placehold.co/150x80/3B82F6/white?text=LOGO" alt="Logo Diskominfo" class="login-logo">
+                    <img src="{{ asset('images/logo_pemprov.png') }}" alt="Logo Diskominfo" class="login-logo">
 
                     <h1 class="login-title">WELCOME</h1>
                     <p class="login-subtitle">Silahkan login dengan menggunakan akun Anda</p>
