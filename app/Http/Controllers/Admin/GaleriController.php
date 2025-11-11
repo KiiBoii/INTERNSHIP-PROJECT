@@ -55,7 +55,8 @@ class GaleriController extends Controller
 
         Galeri::create($validated); // 'bidang' dan 'user_id' akan otomatis tersimpan
 
-        return redirect()->route('galeri.index')->with('success', 'Foto kegiatan berhasil ditambahkan.');
+        // ▼▼▼ PERBAIKAN 1 ▼▼▼
+        return redirect()->route('admin.galeri.index')->with('success', 'Foto kegiatan berhasil ditambahkan.');
     }
 
     public function show(Galeri $galeri)
@@ -93,11 +94,12 @@ class GaleriController extends Controller
         }
 
         // (Opsional: Lacak siapa yang terakhir meng-update)
-
+        // $validated['user_id'] = Auth::id(); // Jika ingin mencatat updater terakhir
 
         $galeri->update($validated); // 'bidang' akan otomatis ter-update
 
-        return redirect()->route('galeri.index')->with('success', 'Foto kegiatan berhasil diperbarui.');
+        // ▼▼▼ PERBAIKAN 2 ▼▼▼
+        return redirect()->route('admin.galeri.index')->with('success', 'Foto kegiatan berhasil diperbarui.');
     }
 
  
@@ -108,6 +110,7 @@ class GaleriController extends Controller
         }
         $galeri->delete();
 
-        return redirect()->route('galeri.index')->with('success', 'Foto kegiatan berhasil dihapus.');
+        // ▼▼▼ PERBAIKAN 3 ▼▼▼
+        return redirect()->route('admin.galeri.index')->with('success', 'Foto kegiatan berhasil dihapus.');
     }
 }
