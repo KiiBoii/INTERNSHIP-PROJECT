@@ -64,7 +64,8 @@ class SliderController extends Controller
 
         Slider::create($validated);
 
-        return redirect()->route('slider.index')->with('success', 'Slide berhasil ditambahkan.');
+        // ▼▼▼ PERBAIKAN 1 ▼▼▼
+        return redirect()->route('admin.slider.index')->with('success', 'Slide berhasil ditambahkan.');
     }
 
  
@@ -95,7 +96,8 @@ class SliderController extends Controller
 
         $slider->update($validated);
 
-        return redirect()->route('slider.index')->with('success', 'Slide berhasil diperbarui.');
+        // ▼▼▼ PERBAIKAN 2 ▼▼▼
+        return redirect()->route('admin.slider.index')->with('success', 'Slide berhasil diperbarui.');
     }
 
 
@@ -109,7 +111,8 @@ class SliderController extends Controller
         // Hapus data
         $slider->delete();
 
-        return redirect()->route('slider.index')->with('success', 'Slide berhasil dihapus.');
+        // ▼▼▼ PERBAIKAN 3 ▼▼▼
+        return redirect()->route('admin.slider.index')->with('success', 'Slide berhasil dihapus.');
     }
 
     public function toggleStatus(Slider $slider)

@@ -15,7 +15,7 @@ class PengaduanController extends Controller
     public function index()
     {
         // Ambil data dari Model 'Kontak', bukan 'Pengaduan'
-        //    Gunakan paginate (15) agar tidak terlalu berat
+        //   Gunakan paginate (15) agar tidak terlalu berat
         $pengaduans = Kontak::latest()->paginate(15);
 
         // Kirim data ke view dengan variabel $pengaduans
@@ -36,6 +36,7 @@ class PengaduanController extends Controller
         $pengaduan->delete();
 
         // Redirect kembali dengan pesan sukses
-        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dihapus.');
+        // ▼▼▼ PERBAIKAN DI SINI ▼▼▼
+        return redirect()->route('admin.pengaduan.index')->with('success', 'Pengaduan berhasil dihapus.');
     }
 }

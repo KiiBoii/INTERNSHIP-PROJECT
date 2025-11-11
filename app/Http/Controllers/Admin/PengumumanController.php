@@ -19,7 +19,7 @@ class PengumumanController extends Controller
         return view('admin.pengumuman.index', compact('pengumumans'));
     }
 
-   
+    
     public function create()
     {
         return view('admin.pengumuman.create');
@@ -45,7 +45,8 @@ class PengumumanController extends Controller
         
         Pengumuman::create($validated);
 
-        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil ditambahkan.');
+        // ▼▼▼ PERBAIKAN 1 ▼▼▼
+        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil ditambahkan.');
     }
 
 
@@ -80,11 +81,10 @@ class PengumumanController extends Controller
             $validated['gambar'] = $request->file('gambar')->store('pengumuman_images', 'public');
         }
 
-
-
         $pengumuman->update($validated);
 
-        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui.');
+        // ▼▼▼ PERBAIKAN 2 ▼▼▼
+        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui.');
     }
 
 
@@ -97,6 +97,7 @@ class PengumumanController extends Controller
 
         $pengumuman->delete();
 
-        return redirect()->route('pengumuman.index')->with('success', 'Pengumuman berhasil dihapus.');
+        // ▼▼▼ PERBAIKAN 3 ▼▼▼
+        return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dihapus.');
     }
 }
