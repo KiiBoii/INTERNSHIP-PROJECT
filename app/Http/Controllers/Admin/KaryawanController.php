@@ -128,7 +128,7 @@ class KaryawanController extends Controller
 
         $karyawan->delete();
 
-        // ▼▼▼ PERBAIKAN 3 (Ini yang menyebabkan error Anda) ▼▼▼
+        // ▼▼▼ PERBAIKAN 3 ▼▼▼
         return redirect()->route('admin.karyawan.index')->with('success', 'Admin/Karyawan berhasil dihapus.');
     }
 }
