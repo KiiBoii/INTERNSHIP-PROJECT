@@ -87,17 +87,17 @@
         .navbar-main .dropdown-menu {
             padding: 0;
             border: none;
-            /* 👇👇👇 UKURAN DROPDOWN DIPERKECIL (280px - 320px) 👇👇👇 */
+            /* UKURAN DROPDOWN LEVEL 1 */
             min-width: 280px; 
             max-width: 320px; 
-            /* 👆👆👆 AKHIR UKURAN DROPDOWN DIPERKECIL 👆👆👆 */
         }
         .navbar-main .dropdown-item {
             color: var(--dark-blue);
             font-weight: 500;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 1rem; /* Padding dikurangi */
             transition: all 0.2s ease;
             white-space: normal; 
+            font-size: 0.85rem; /* FONT SIZE DIPERKECIL LAGI UNTUK LEVEL 1 */
         }
         .navbar-main .dropdown-item:hover {
             background-color: var(--primary-color);
@@ -121,9 +121,17 @@
             display: none; /* Sembunyikan secara default */
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             border: 1px solid #e0e0e0;
-            min-width: 300px; /* Lebar sub-dropdown sedikit lebih besar */
+            /* LEBAR SUBMENU DIPERENDAH LAGI */
+            min-width: 300px; 
             max-width: 400px; 
         }
+
+        /* PERUBAHAN FONT SIZE KHUSUS UNTUK ITEM DI LEVEL 2 */
+        .dropdown-submenu > .dropdown-menu .dropdown-item {
+            font-size: 0.8rem; /* FONT SIZE DIPERKECIL LAGI UNTUK LEVEL 2 */
+            padding: 0.5rem 1rem; /* Padding dikurangi */
+        }
+
         /* Tambahkan panah kanan untuk submenu */
         .dropdown-submenu > a::after {
             display: block;
@@ -326,6 +334,7 @@
                                     <a class="dropdown-item" href="#">
                                         Daftar Informasi Publik
                                     </a>
+                                    
                                     <ul class="dropdown-menu">
                                         {{-- 12 Sub-Submenu PDF - MENGGUNAKAN ROUTE BARU --}}
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.lansia') }}">1. Rehabilitasi Sosial dasar Lanjut Usia Telantar di Dalam Panti</a></li>

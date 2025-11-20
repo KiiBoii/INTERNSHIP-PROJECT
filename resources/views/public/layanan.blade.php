@@ -3,6 +3,7 @@
 {{-- 1. CSS KUSTOM DITAMBAHKAN UNTUK SLIDER --}}
 @push('styles')
 <style>
+/* ... (CSS di sini tidak berubah) ... */
     .news-slider .carousel-item {
         height: 450px; /* Atur tinggi slider */
         background-color: #555;
@@ -86,7 +87,7 @@
 <div class="container my-5">
     
     <div id="heroSlider" class="carousel slide news-slider" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000" 
-         style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+        style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
         
         <div class="carousel-indicators">
             @if(isset($sliders) && $sliders->count() > 0)
@@ -165,7 +166,7 @@
                         <div class="col-md-6 d-flex align-items-center">
                             <label for="perPageDok" class="me-2">Tampilkan</label>
                             
-                            {{-- ▼▼▼ PERBAIKAN 1 DI SINI ▼▼▼ --}}
+                            {{-- ▼▼▼ PERBAIKAN 1 DI SINI (Spasi lebar dihapus) ▼▼▼ --}}
                             <select id="perPageDok" class="form-select form-select-sm w-auto" onchange="window.location.href = this.value;">
                                 @php
                                     $currentPage = $dokumens->perPage();
@@ -256,7 +257,7 @@
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body text-muted">
-                                    Syarat utama adalah...
+                                    Syarat utama adalah ... (Jawaban disesuaikan).
                                 </div>
                             </div>
                         </div>
@@ -272,6 +273,73 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- ▼▼▼ TAMBAHAN 5 FAQ BARU DIMULAI DI SINI ▼▼▼ --}}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Siapa yang berhak mendapatkan Program Keluarga Harapan (PKH)?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    PKH diberikan kepada Keluarga Penerima Manfaat (KPM) yang terdaftar di DTKS dan memiliki komponen kesehatan (ibu hamil/anak balita), pendidikan (anak sekolah), dan/atau kesejahteraan sosial (lansia/disabilitas berat).
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    Apakah Tanda Daftar Lembaga Kesejahteraan Sosial (LKS) perlu diperbarui?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Ya, Tanda Daftar LKS memiliki masa berlaku tertentu (biasanya 5 tahun) dan harus diperpanjang melalui proses pendaftaran ulang di Dinas Sosial sebelum masa berlakunya habis.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                    Bagaimana cara mengajukan permohonan informasi publik (PPID)?
+                                </button>
+                            </h2>
+                            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Permohonan informasi publik dapat diajukan secara langsung di kantor PPID Pembantu Dinas Sosial Provinsi Riau, atau melalui formulir daring/email resmi PPID kami.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                    Apa yang harus dilakukan jika terjadi bencana alam?
+                                </button>
+                            </h2>
+                            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Segera laporkan kejadian bencana kepada perangkat desa/lurah setempat. Dinas Sosial akan berkoordinasi dengan instansi terkait untuk menyalurkan bantuan logistik dan perlindungan sosial darurat.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                    Apakah Dinas Sosial menerima pengaduan terkait penyelewengan bantuan?
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Ya. Kami mendorong masyarakat untuk melaporkan dugaan penyelewengan atau ketidaktepatan sasaran bantuan sosial melalui kontak pengaduan resmi kami. Identitas pelapor akan dilindungi.
+                                </div>
+                            </div>
+                        </div>
+                        {{-- ▲▲▲ TAMBAHAN 5 FAQ BARU BERAKHIR DI SINI ▲▲▲ --}}
                     </div>
 
                 </div>
