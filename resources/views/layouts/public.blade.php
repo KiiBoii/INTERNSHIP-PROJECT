@@ -351,9 +351,9 @@
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.pertimbanganteknisugbpub') }}">12. Pertimbangan teknis Undian Gratis Berhadiah (UGB) dan Pengumpulan Uang atau Barang (PUB)</a></li>
                                     </ul>
                                 </li>
-                                {{-- Contoh item PPID lain (opsional) --}}
+                                <!-- {{-- Contoh item PPID lain (opsional) --}}
                                 <li><a class="dropdown-item" href="#">Visi Misi PPID</a></li>
-                                <li><a class="dropdown-item" href="#">Prosedur Permohonan Informasi</a></li>
+                                <li><a class="dropdown-item" href="#">Prosedur Permohonan Informasi</a></li> -->
                             </ul>
                         </li>
                         {{-- ▲▲▲ AKHIR MENU PPID DROPDOWN ▲▲▲ --}}
