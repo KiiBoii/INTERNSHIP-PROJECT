@@ -24,12 +24,12 @@ class PageController extends Controller
         $sliders = Slider::where('halaman', 'home')->where('is_visible', true)->latest()->get();
         
         $semuaBeritaBaru = Berita::with('user')
-                                         ->whereNull('tag') 
-                                         ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                                         ->latest()
-                                         ->take(6)
-                                         ->get();
-                                         
+                                     ->whereNull('tag') 
+                                     ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                                     ->latest()
+                                     ->take(6)
+                                     ->get();
+                                     
         $beritaUtama = $semuaBeritaBaru->first();
         $beritaLainnya = $semuaBeritaBaru->slice(1);
         
@@ -69,30 +69,30 @@ class PageController extends Controller
         
         // Ambil 6 Berita TERBARU yang BUKAN topik (tag = null) untuk "Hot News"
         $hot_news = Berita::with('user')
-                            ->whereNull('tag') // Hanya berita biasa
-                            ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                            ->latest()
-                            ->take(6)
-                            ->get();
+                             ->whereNull('tag') // Hanya berita biasa
+                             ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                             ->latest()
+                             ->take(6)
+                             ->get();
         
         // Ambil ID Berita 'hot' untuk dikecualikan
         $hot_news_ids = $hot_news->pluck('id');
 
         // Ambil sisa Berita yang BUKAN topik (tag = null) untuk "Berita Lainnya"
         $beritas = Berita::with('user')
-                            ->whereNull('tag') // Hanya berita biasa
-                            ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                            ->whereNotIn('id', $hot_news_ids) // Lewati berita 'hot'
-                            ->latest()
-                            ->paginate(9); // Ambil 9 per halaman
+                             ->whereNull('tag') // Hanya berita biasa
+                             ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                             ->whereNotIn('id', $hot_news_ids) // Lewati berita 'hot'
+                             ->latest()
+                             ->paginate(9); // Ambil 9 per halaman
         
         // Ambil 5 Berita TERBARU yang MEMILIKI TAG (ini adalah Topik Lainnya)
         $topik_lainnya = Berita::with('user')
-                                         ->whereNotNull('tag') // HANYA berita yang punya tag
-                                         ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                                         ->latest()
-                                         ->take(5) // Ambil 5 topik terbaru
-                                         ->get();
+                                     ->whereNotNull('tag') // HANYA berita yang punya tag
+                                     ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                                     ->latest()
+                                     ->take(5) // Ambil 5 topik terbaru
+                                     ->get();
 
         return view('public.berita', compact('sliders', 'hot_news', 'beritas', 'topik_lainnya'));
     }
@@ -101,36 +101,30 @@ class PageController extends Controller
     /**
      * Halaman Semua Topik
      */
-    /**
-     * Halaman Semua Topik
-     */
     public function topik()
     {
         // 1. Ambil 3 Berita 'Topik' terbaru untuk slider (Ini sudah benar)
         $sliders = Berita::with('user')
-                            ->whereNotNull('tag') // HANYA berita yang punya tag
-                            ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                            ->latest()
-                            ->take(3) // Ambil 3 saja
-                            ->get();
+                             ->whereNotNull('tag') // HANYA berita yang punya tag
+                             ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                             ->latest()
+                             ->take(3) // Ambil 3 saja
+                             ->get();
         
         // 2. Konten Utama: Ambil SEMUA berita yang punya TAG
         $semua_topik = Berita::with('user')
-                                 ->whereNotNull('tag') // HANYA berita yang punya tag
-                                 ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                                 // ▼▼▼ PASTIKAN BARIS DI BAWAH INI DIHAPUS ▼▼▼
-                                 // ->whereNotIn('id', $sliders->pluck('id')) 
-                                 // ▲▲▲ JANGAN GUNAKAN whereNotIn() ▲▲▲
-                                 ->latest()
-                                 ->paginate(9); // Paginasi 9 item per halaman
+                                     ->whereNotNull('tag') // HANYA berita yang punya tag
+                                     ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                                     ->latest()
+                                     ->paginate(9); // Paginasi 9 item per halaman
         
         // 3. Sidebar: Ambil 5 Berita terbaru TANPA tag (Ini sudah benar)
         $berita_terbaru_sidebar = Berita::with('user')
-                                                 ->whereNull('tag') // Hanya berita biasa
-                                                 ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
-                                                 ->latest()
-                                                 ->take(5) // Ambil 5 berita terbaru
-                                                 ->get();
+                                                     ->whereNull('tag') // Hanya berita biasa
+                                                     ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel beritas
+                                                     ->latest()
+                                                     ->take(5) // Ambil 5 berita terbaru
+                                                     ->get();
 
         // 4. Kirim data ke view (Ini sudah benar)
         return view('public.berita-topik', compact('sliders', 'semua_topik', 'berita_terbaru_sidebar'));
@@ -152,9 +146,6 @@ class PageController extends Controller
         }
 
         // ▼▼▼ PERUBAHAN DI SINI ▼▼▼
-        // Mengganti ->get() menjadi ->paginate() agar paginasi di view berfungsi.
-        // Saya set 9 item per halaman, Anda bisa ubah angkanya.
-        // $galeris = $query->latest()->get(); // <-- Kode lama
         $galeris = $query->latest()->paginate()->withQueryString(); // <-- Kode baru
         // ▲▲▲ AKHIR PERUBAHAN ▲▲▲
 
@@ -192,9 +183,9 @@ class PageController extends Controller
         // Asumsi: Pengumuman juga punya kolom is_visible
         // ▼▼▼ PERUBAHAN DI SINI (10 -> 9) ▼▼▼
         $pengumumans = Pengumuman::with('user')
-                                 ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel pengumumans
-                                 ->latest()
-                                 ->paginate(10);
+                                     ->where('is_visible', true) // <-- Asumsi: Kolom ini ada di tabel pengumumans
+                                     ->latest()
+                                     ->paginate(10);
         // ▲▲▲ AKHIR PERUBAHAN ▲▲▲
         
         return view('public.pengumuman', compact('sliders', 'pengumumans'));
@@ -207,9 +198,9 @@ class PageController extends Controller
     {
         // Mengambil data slider untuk halaman 'faq'. 
         $sliders = Slider::where('halaman', 'faq') 
-                         ->where('is_visible', true)
-                         ->latest()
-                         ->get();
+                             ->where('is_visible', true)
+                             ->latest()
+                             ->get();
         
         return view('public.faq', compact('sliders' /*, 'faqs' */));
     }
@@ -264,66 +255,51 @@ class PageController extends Controller
     }
 
     // =========================================================================
-    // ▼▼▼ [BARU] 12 METHOD UNTUK HALAMAN PPID (DAFTAR INFORMASI PUBLIK) ▼▼▼
+    // ▼▼▼ [BARU] 18 METHOD UNTUK HALAMAN PPID (STRUKTUR BARU) ▼▼▼
     // =========================================================================
+    
+    // Level 1: Tautan Utama PPID
+    public function ppidDaftarInfo2025() { return view('public.ppid.daftar_info_2025'); }
+    public function ppidMaklumat() { return view('public.ppid.maklumat'); }
+    public function ppidPengaduanWewenang() { return view('public.ppid.pengaduan_wewenang'); }
+    public function ppidLaporan() { return view('public.ppid.laporan_ppid'); }
+    public function ppidInfoPublikLain() { return view('public.ppid.info_publik_lain'); }
+    public function ppidJumlahPermohonan() { return view('public.ppid.jumlah_permohonan'); }
+    
+    // Level 2 & 3: Layanan Informasi
+    public function ppidFormulirPermohonan() { return view('public.ppid.formulir_permohonan'); }
+    public function ppidAlurSengketa() { return view('public.ppid.alur_sengketa'); }
+    public function ppidAlurHakPengajuan() { return view('public.ppid.alur_hak_pengajuan'); }
+    public function ppidAlurTataCara() { return view('public.ppid.alur_tata_cara'); }
+    public function ppidFormulirKeberatan() { return view('public.ppid.formulir_keberatan'); }
+    
+    // Level 2 & 3: Jenis Informasi
+    public function ppidInfoBerkala() { return view('public.ppid.info_berkala'); }
+    public function ppidInfoSertaMerta() { return view('public.ppid.info_serta_merta'); }
+    public function ppidInfoSetiapSaat() { return view('public.ppid.info_setiap_saat'); }
+    
+    // Level 2 & 3: Surat Keputusan
+    public function ppidSkTerbaru() { return view('public.ppid.sk_terbaru'); }
+    public function ppidArsipSk() { return view('public.ppid.arsip_sk'); }
+    
+    // Level 2: Layanan Teknis (Yang lama, kini di bawah Layanan Publik)
+    public function ppidLansiaPanti() { return view('public.ppid.lansia_panti'); } // <-- Ubah view path
+    public function ppidAnakPanti() { return view('public.ppid.anak_panti'); } // <-- Ubah view path
+    // Catatan: 10 method Layanan Teknis lainnya harus disalin dan diubah view path-nya di sini
+    // (Misalnya, ppidDisabilitasPanti() harus mengarah ke view yang sesuai di folder ppid)
 
-    public function ppidLansiaPanti()
-    {
-        return view('public.layanan.RehabilitasiSosialLansiaPanti');
-    }
-
-    public function ppidAnakPanti()
-    {
-        return view('public.layanan.RehabilitasiSosialAnakPanti');
-    }
-
-    public function ppidDisabilitasPanti()
-    {
-        return view('public.layanan.RehabilitasiDisabilitasPanti');
-    }
-
-    public function ppidDisabilitasMental()
-    {
-        return view('public.layanan.RehabilitasiDisabilitasMental');
-    }
-
-    public function ppidGelandangPengemis()
-    {
-        return view('public.layanan.RehabilitasiGelandangPengemis');
-    }
-
-    public function ppidStandarPelayananABH()
-    {
-        return view('public.layanan.StandarPelayananAnakBentukHukum');
-    }
-
-    public function ppidPenangananBencana()
-    {
-        return view('public.layanan.PenangananKorbanBencana');
-    }
-
-    public function ppidIzinPengangkatanAnak()
-    {
-        return view('public.layanan.PemberianIzinPengangkatanAnak');
-    }
-
-    public function ppidTandaDaftarLKS()
-    {
-        return view('public.layanan.PenerbitanTandaDaftarLKS');
-    }
-
-    public function ppidPemulanganImigran()
-    {
-        return view('public.layanan.PemulanganWargaImigran');
-    }
-
-    public function ppidPengaduanMonitoringPKH()
-    {
-        return view('public.layanan.PengaduanMonitoringPKH');
-    }
-
-    public function ppidPertimbanganTeknisUGBPUB()
-    {
-        return view('public.layanan.PertimbanganTeknisUGBPUB');
-    }
+    public function ppidDisabilitasPanti() { return view('public.ppid.disabilitas_panti'); }
+    public function ppidDisabilitasMental() { return view('public.ppid.disabilitas_mental'); }
+    public function ppidGelandangPengemis() { return view('public.ppid.gelandang_pengemis'); }
+    public function ppidStandarPelayananABH() { return view('public.ppid.standar_pelayanan_abh'); }
+    public function ppidPenangananBencana() { return view('public.ppid.penanganan_bencana'); }
+    public function ppidIzinPengangkatanAnak() { return view('public.ppid.izin_pengangkatan_anak'); }
+    public function ppidTandaDaftarLKS() { return view('public.ppid.tanda_daftar_lks'); }
+    public function ppidPemulanganImigran() { return view('public.ppid.pemulangan_imigran'); }
+    public function ppidPengaduanMonitoringPKH() { return view('public.ppid.pengaduan_monitoring_pkh'); }
+    public function ppidPertimbanganTeknisUGBPUB() { return view('public.ppid.pertimbangan_teknis_ugb_pub'); }
+    
+    // =========================================================================
+    // ▲▲▲ AKHIR METHOD PPID BARU ▲▲▲
+    // =========================================================================
 }

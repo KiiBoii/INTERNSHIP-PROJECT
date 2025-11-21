@@ -149,7 +149,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link fw-bold text-dark w-100 py-3" id="tab-bantuan" data-bs-toggle="pill" data-bs-target="#content-bantuan" type="button" role="tab" aria-controls="content-bantuan" aria-selected="false">
-                        <i class="bi bi-question-circle me-2"></i> Pusat Bantuan
+                        <i class="bi bi-question-circle me-2"></i> Pusat Informasi
                     </button>
                 </li>
             </ul>
@@ -233,7 +233,7 @@
                 
                 {{-- TAB 3: PUSAT BANTUAN (FAQ) --}}
                 <div class="tab-pane fade" id="content-bantuan" role="tabpanel" aria-labelledby="tab-bantuan">
-                    <h3 id="pusat-bantuan" class="fw-bold mb-4">Pusat Bantuan</h3>
+                    <h3 id="pusat-bantuan" class="fw-bold mb-4">Pusat Informasi</h3>
                     <p class="text-muted mb-4">Berikut adalah jawaban untuk pertanyaan yang sering diajukan seputar layanan kami.</p>
                     
                     <div class="accordion" id="faqAccordion">

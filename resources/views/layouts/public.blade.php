@@ -338,46 +338,46 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="ppidDropdown">
                                 
-                                {{-- DIUBAH: DARI DROPDOWN-HEADER MENJADI DROPDOWN-ITEM --}}
-                                <li><a class="dropdown-item" href="#">Daftar Informasi Publik 2025</a></li> 
+                                {{-- DIUBAH: Daftar Informasi Publik 2025 dengan tautan ke route --}}
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.daftar_info_2025') }}">Daftar Informasi Publik 2025</a></li> 
                                 
-                                <li><a class="dropdown-item" href="#">Maklumat Layanan Informasi</a></li>
-                                <li><a class="dropdown-item" href="#">Pengaduan Penyalahgunaan Wewenang</a></li>
-                                <li><a class="dropdown-item" href="#">Laporan PPID</a></li>
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.maklumat') }}">Maklumat Layanan Informasi</a></li>
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.pengaduan_wewenang') }}">Pengaduan Penyalahgunaan Wewenang</a></li>
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.laporan_ppid') }}">Laporan PPID</a></li>
                                 
                                 {{-- Layanan Informasi (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Layanan Informasi</a>
                                     <ul class="dropdown-menu">
-                                        {{-- ISI BARU SESUAI GAMBAR --}}
-                                        <li><a class="dropdown-item" href="#">Formulir Permohonan Informasi</a></li>
-                                        <li><a class="dropdown-item" href="#">Alur Penyelesaian Sengketa Informasi</a></li>
-                                        <li><a class="dropdown-item" href="#">Alur Hak Dan Tata Cara Pengajuan Keberatan Dan Pengajuan Sengketa Informasi</a></li>
-                                        <li><a class="dropdown-item" href="#">Alur Tata Cara Dan Hak Permohonan Informasi</a></li>
-                                        <li><a class="dropdown-item" href="#">Formulir Keberatan</a></li>
+                                        {{-- ISI BARU SESUAI GAMBAR DITERAPKAN --}}
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.formulir_permohonan') }}">Formulir Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_sengketa') }}">Alur Penyelesaian Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_hak_pengajuan') }}">Alur Hak Dan Tata Cara Pengajuan Keberatan Dan Pengajuan Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_tata_cara') }}">Alur Tata Cara Dan Hak Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.formulir_keberatan') }}">Formulir Keberatan</a></li>
                                     </ul>
                                 </li>
                                 
-                                {{-- Jenis Informasi (Level 2/Submenu Lama) --}}
+                                {{-- Jenis Informasi (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Jenis Informasi</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Informasi Berkala</a></li>
-                                        <li><a class="dropdown-item" href="#">Informasi Serta Merta</a></li>
-                                        <li><a class="dropdown-item" href="#">Informasi Setiap Saat</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_berkala') }}">Informasi Berkala</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_serta_merta') }}">Informasi Serta Merta</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_setiap_saat') }}">Informasi Setiap Saat</a></li>
                                     </ul>
                                 </li>
-                                {{-- Surat Keputusan (Level 2/Submenu Lama) --}}
+                                {{-- Surat Keputusan (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Surat Keputusan</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">SK Terbaru</a></li>
-                                        <li><a class="dropdown-item" href="#">Arsip SK</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.sk_terbaru') }}">SK Terbaru</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('public.ppid.arsip_sk') }}">Arsip SK</a></li>
                                     </ul>
                                 </li>
                                 
-                                <li><a class="dropdown-item" href="#">Informasi Publik Lain</a></li>
-                                <li><a class="dropdown-item" href="#">Jumlah Permohonan Informasi</a></li>
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.info_publik_lain') }}">Informasi Publik Lain</a></li>
+                                <li><a class="dropdown-item" href="{{ route('public.ppid.jumlah_permohonan') }}">Jumlah Permohonan Informasi</a></li>
                                 
                             </ul>
                         </li>
@@ -394,7 +394,7 @@
                                 {{-- Item bawaan Layanan Publik --}}
                                 <li>
                                     <a class="dropdown-item" href="{{ route('public.layanan') }}#content-bantuan">
-                                        Pusat Bantuan (FAQ)
+                                        Pusat Informasi
                                     </a>
                                 </li>
                                 <li>
