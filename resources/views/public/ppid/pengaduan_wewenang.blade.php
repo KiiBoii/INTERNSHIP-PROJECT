@@ -9,7 +9,7 @@
         <div class="col-lg-10">
             @php
                 // !!! GANTI DENGAN NAMA FILE PDF YANG SESUAI DI SERVER !!!
-                $fileName = '3.PENGADUAN_PENYALAHGUNAAN_WEWENANG.pdf'; 
+                $fileName = 'JENIS PELAYANAN DINSOS RIAU TH. 2025.pdf'; 
                 $filePath = asset('dokumenPPid/' . $fileName);
             @endphp
 

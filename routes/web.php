@@ -34,6 +34,7 @@ Route::get('/profil-kepala-dinas', [PageController::class, 'profilKadis'])->name
 
 // --- Grup Halaman Berita (URUTAN DIPERBAIKI) ---
 Route::get('/berita', [PageController::class, 'berita'])->name('public.berita');
+// Route 'topik' yang spesifik HARUS ada SEBELUM route '{id}'
 Route::get('/berita/topik', [PageController::class, 'topik'])->name('public.berita.topik');
 Route::get('/berita/{id}', [PageController::class, 'showBerita'])->name('public.berita.detail');
 // --- Akhir Grup Berita ---
@@ -50,37 +51,41 @@ Route::post('/kontak', [PageController::class, 'storeKontak'])->name('public.kon
 
 
 // =========================================================================
-// ▼▼▼ [BARU] RUTE PPID (STRUKTUR LENGKAP) ▼▼▼
+// ▼▼▼ [PERBAIKAN] RUTE PPID (MENAMBAHKAN SEMUA ROUTE YANG HILANG) ▼▼▼
 // =========================================================================
+
+// Rute PPID Level 1 dan Level 2 (Layanan, Jenis, SK)
 Route::prefix('ppid')->name('public.ppid.')->group(function () {
-    
-    // Level 1: Tautan utama PPID
+    // Route yang hilang dan menyebabkan error
     Route::get('/daftar-informasi-2025', [PageController::class, 'ppidDaftarInfo2025'])->name('daftar_info_2025');
-    Route::get('/maklumat-layanan', [PageController::class, 'ppidMaklumat'])->name('maklumat');
+    Route::get('/maklumat', [PageController::class, 'ppidMaklumat'])->name('maklumat');
     Route::get('/pengaduan-wewenang', [PageController::class, 'ppidPengaduanWewenang'])->name('pengaduan_wewenang');
-    Route::get('/laporan', [PageController::class, 'ppidLaporan'])->name('laporan_ppid');
-    
-    // Level 2 & 3: Layanan Informasi
+    Route::get('/laporan', [PageController::class, 'ppidLaporanPpid'])->name('laporan_ppid');
+
+    // Rute Submenu: Layanan Informasi
     Route::get('/formulir-permohonan', [PageController::class, 'ppidFormulirPermohonan'])->name('formulir_permohonan');
     Route::get('/alur-sengketa', [PageController::class, 'ppidAlurSengketa'])->name('alur_sengketa');
     Route::get('/alur-hak-pengajuan', [PageController::class, 'ppidAlurHakPengajuan'])->name('alur_hak_pengajuan');
     Route::get('/alur-tata-cara', [PageController::class, 'ppidAlurTataCara'])->name('alur_tata_cara');
     Route::get('/formulir-keberatan', [PageController::class, 'ppidFormulirKeberatan'])->name('formulir_keberatan');
     
-    // Level 2 & 3: Jenis Informasi
-    Route::get('/informasi-berkala', [PageController::class, 'ppidInfoBerkala'])->name('info_berkala');
-    Route::get('/informasi-serta-merta', [PageController::class, 'ppidInfoSertaMerta'])->name('info_serta_merta');
-    Route::get('/informasi-setiap-saat', [PageController::class, 'ppidInfoSetiapSaat'])->name('info_setiap_saat');
+    // Rute Submenu: Jenis Informasi
+    Route::get('/info-berkala', [PageController::class, 'ppidInfoBerkala'])->name('info_berkala');
+    Route::get('/info-serta-merta', [PageController::class, 'ppidInfoSertaMerta'])->name('info_serta_merta');
+    Route::get('/info-setiap-saat', [PageController::class, 'ppidInfoSetiapSaat'])->name('info_setiap_saat');
     
-    // Level 2 & 3: Surat Keputusan
-    Route::get('/sk-terbaru', [PageController::class, 'ppidSkTerbaru'])->name('sk_terbaru');
-    Route::get('/arsip-sk', [PageController::class, 'ppidArsipSk'])->name('arsip_sk');
-    
-    // Level 1: Tautan akhir PPID
-    Route::get('/informasi-publik-lain', [PageController::class, 'ppidInfoPublikLain'])->name('info_publik_lain');
-    Route::get('/jumlah-permohonan', [PageController::class, 'ppidJumlahPermohonan'])->name('jumlah_permohonan');
+    // Rute Submenu: Surat Keputusan
+    Route::get('/sk-terbaru', [PageController::class, 'ppidSKTerbaru'])->name('sk_terbaru');
+    Route::get('/arsip-sk', [PageController::class, 'ppidArsipSK'])->name('arsip_sk');
 
-    // Catatan: 12 Rute Layanan Teknis tetap di sini, tapi di bawah prefix PPID.
+    // Rute Lainnya
+    Route::get('/info-publik-lain', [PageController::class, 'ppidInfoPublikLain'])->name('info_publik_lain');
+    Route::get('/jumlah-permohonan', [PageController::class, 'ppidJumlahPermohonan'])->name('jumlah_permohonan');
+});
+
+
+// Rute PPID Daftar Layanan Teknis (Sub-submenu Layanan Publik)
+Route::prefix('ppid/daftar-informasi')->name('public.ppid.')->group(function () {
     Route::get('/lansia-panti', [PageController::class, 'ppidLansiaPanti'])->name('lansia');
     Route::get('/anak-panti', [PageController::class, 'ppidAnakPanti'])->name('anakpanti');
     Route::get('/disabilitas-fisik-panti', [PageController::class, 'ppidDisabilitasPanti'])->name('disabilitaspanti');
@@ -93,10 +98,9 @@ Route::prefix('ppid')->name('public.ppid.')->group(function () {
     Route::get('/pemulangan-imigran', [PageController::class, 'ppidPemulanganImigran'])->name('pemulanganimigran');
     Route::get('/pengaduan-monitoring-pkh', [PageController::class, 'ppidPengaduanMonitoringPKH'])->name('pengaduanmonitoringpkh');
     Route::get('/pertimbangan-teknis-ugb-pub', [PageController::class, 'ppidPertimbanganTeknisUGBPUB'])->name('pertimbanganteknisugbpub');
-    
 });
 // =========================================================================
-// ▲▲▲ AKHIR RUTE PPID (STRUKTUR LENGKAP) ▲▲▲
+// ▲▲▲ AKHIR PERBAIKAN RUTE PPID ▲▲▲
 // =========================================================================
 
 

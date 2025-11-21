@@ -386,7 +386,7 @@
                         {{-- ▼▼▼ MENU LAYANAN PUBLIK (DIKEMBALIKAN KE STRUKTUR SEDERHANA) ▼▼▼ --}}
                         <li class="nav-item dropdown">
                             {{-- LOGIKA ACTIVE DISINI: Aktif jika route Layanan Publik atau route Layanan PPID aktif --}}
-                            <a class="nav-link {{ request()->routeIs('public.layanan') || request()->is('ppid/*') ? 'active' : '' }}" href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link {{ request()->routeIs('public.layanan') || request()->is('layanan/*') ? 'active' : '' }}" href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Layanan Publik
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="layananDropdown">
@@ -394,7 +394,7 @@
                                 {{-- Item bawaan Layanan Publik --}}
                                 <li>
                                     <a class="dropdown-item" href="{{ route('public.layanan') }}#content-bantuan">
-                                        Pusat Informasi
+                                        Pusat Bantuan (FAQ)
                                     </a>
                                 </li>
                                 <li>
