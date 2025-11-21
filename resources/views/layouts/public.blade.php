@@ -104,13 +104,13 @@
             color: #ffffff;
         }
         
-        /* === STYLE UNTUK DROPDOWN MULTI-LEVEL (PPID > Daftar Info Publik) === */
+        /* === STYLE UNTUK DROPDOWN MULTI-LEVEL (LAYANAN PUBLIK & PPID) === */
         .dropdown-submenu {
             position: relative;
         }
-        /* Tampilkan Sub-menu Level 2 saat hover di Sub-menu Level 1 */
+        /* Tampilkan Sub-menu Level 2/3 saat hover */
         .dropdown-submenu:hover > .dropdown-menu {
-            display: block;
+            display: block !important; /* DITERAPKAN: Memastikan submenu tampil saat hover */
         }
         .dropdown-submenu > .dropdown-menu {
             top: 0;
@@ -118,10 +118,10 @@
             margin-top: -6px;
             margin-left: -1px;
             border-radius: .25rem;
-            display: none; /* Sembunyikan secara default */
+            display: none !important; /* DITERAPKAN: Memastikan submenu tersembunyi secara default */
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             border: 1px solid #e0e0e0;
-            /* LEBAR SUBMENU DIPERENDAH LAGI */
+            /* LEBAR SUBMENU */
             min-width: 300px; 
             max-width: 400px; 
         }
@@ -145,6 +145,15 @@
             color: #ffffff; /* Ubah warna panah saat hover */
         }
         /* === AKHIR STYLE DROPDOWN MULTI-LEVEL === */
+
+        /* Style untuk Header di Dropdown */
+        .dropdown-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            padding: 0.5rem 1rem;
+            text-transform: uppercase;
+        }
 
 
         /* Section Title Styling */
@@ -322,21 +331,82 @@
                             <a class="nav-link {{ request()->routeIs('public.berita') ? 'active' : '' }}" href="{{ route('public.berita') }}">Berita</a>
                         </li>
                         
-                        {{-- ▼▼▼ MENU PPID DROPDOWN (2-Tingkat) - TAUTAN DIPERBAIKI ▼▼▼ --}}
+                        {{-- ▼▼▼ MENU PPID DROPDOWN (STRUKTUR BARU SESUAI GAMBAR) ▼▼▼ --}}
                         <li class="nav-item dropdown">
-                            <a class="nav-link {{ request()->is('ppid/*') ? 'active' : '' }}" href="#" id="ppidDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link" href="#" id="ppidDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 PPID
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="ppidDropdown">
                                 
-                                {{-- Submenu: Daftar Informasi Publik (Level 2) --}}
+                                {{-- DIUBAH: DARI DROPDOWN-HEADER MENJADI DROPDOWN-ITEM --}}
+                                <li><a class="dropdown-item" href="#">Daftar Informasi Publik 2025</a></li> 
+                                
+                                <li><a class="dropdown-item" href="#">Maklumat Layanan Informasi</a></li>
+                                <li><a class="dropdown-item" href="#">Pengaduan Penyalahgunaan Wewenang</a></li>
+                                <li><a class="dropdown-item" href="#">Laporan PPID</a></li>
+                                
+                                {{-- Layanan Informasi (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
-                                    <a class="dropdown-item" href="#">
-                                        Daftar Informasi Publik
-                                    </a>
-                                    
+                                    <a class="dropdown-item" href="#">Layanan Informasi</a>
                                     <ul class="dropdown-menu">
-                                        {{-- 12 Sub-Submenu PDF - MENGGUNAKAN ROUTE BARU --}}
+                                        {{-- ISI BARU SESUAI GAMBAR --}}
+                                        <li><a class="dropdown-item" href="#">Formulir Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="#">Alur Penyelesaian Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="#">Alur Hak Dan Tata Cara Pengajuan Keberatan Dan Pengajuan Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="#">Alur Tata Cara Dan Hak Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="#">Formulir Keberatan</a></li>
+                                    </ul>
+                                </li>
+                                
+                                {{-- Jenis Informasi (Level 2/Submenu Lama) --}}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" href="#">Jenis Informasi</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Informasi Berkala</a></li>
+                                        <li><a class="dropdown-item" href="#">Informasi Serta Merta</a></li>
+                                        <li><a class="dropdown-item" href="#">Informasi Setiap Saat</a></li>
+                                    </ul>
+                                </li>
+                                {{-- Surat Keputusan (Level 2/Submenu Lama) --}}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" href="#">Surat Keputusan</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">SK Terbaru</a></li>
+                                        <li><a class="dropdown-item" href="#">Arsip SK</a></li>
+                                    </ul>
+                                </li>
+                                
+                                <li><a class="dropdown-item" href="#">Informasi Publik Lain</a></li>
+                                <li><a class="dropdown-item" href="#">Jumlah Permohonan Informasi</a></li>
+                                
+                            </ul>
+                        </li>
+                        {{-- ▲▲▲ AKHIR MENU PPID DROPDOWN ▲▲▲ --}}
+                        
+                        {{-- ▼▼▼ MENU LAYANAN PUBLIK (DIKEMBALIKAN KE STRUKTUR SEDERHANA) ▼▼▼ --}}
+                        <li class="nav-item dropdown">
+                            {{-- LOGIKA ACTIVE DISINI: Aktif jika route Layanan Publik atau route Layanan PPID aktif --}}
+                            <a class="nav-link {{ request()->routeIs('public.layanan') || request()->is('ppid/*') ? 'active' : '' }}" href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Layanan Publik
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="layananDropdown">
+                                
+                                {{-- Item bawaan Layanan Publik --}}
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-bantuan">
+                                        Pusat Bantuan (FAQ)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-dokumen">
+                                        Dokumen Publikasi
+                                    </a>
+                                </li>
+                                
+                                {{-- Submenu Daftar Layanan Teknis (12 item) --}}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" href="#">Daftar Layanan Teknis</a>
+                                    <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.lansia') }}">1. Rehabilitasi Sosial dasar Lanjut Usia Telantar di Dalam Panti</a></li>
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.anakpanti') }}">2. Rehabilitasi Sosial Dasar Anak Telantar dalam Panti</a></li>
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.disabilitaspanti') }}">3. Rehabilitasi Sosial Dasar Penyandang Disabilitas Fisik, Sensorik Telantar di dalam Panti</a></li>
@@ -351,32 +421,7 @@
                                         <li><a class="dropdown-item" href="{{ route('public.ppid.pertimbanganteknisugbpub') }}">12. Pertimbangan teknis Undian Gratis Berhadiah (UGB) dan Pengumpulan Uang atau Barang (PUB)</a></li>
                                     </ul>
                                 </li>
-                                <!-- {{-- Contoh item PPID lain (opsional) --}}
-                                <li><a class="dropdown-item" href="#">Visi Misi PPID</a></li>
-                                <li><a class="dropdown-item" href="#">Prosedur Permohonan Informasi</a></li> -->
-                            </ul>
-                        </li>
-                        {{-- ▲▲▲ AKHIR MENU PPID DROPDOWN ▲▲▲ --}}
-                        
-                        {{-- ▼▼▼ MENU LAYANAN PUBLIK (DROPDOWN dengan ANCHOR) ▼▼▼ --}}
-                        <li class="nav-item dropdown">
-                            {{-- Link utama mengarah ke halaman layanan --}}
-                            <a class="nav-link {{ request()->routeIs('public.layanan') ? 'active' : '' }}" href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Layanan Publik
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="layananDropdown">
-                                <li>
-                                    {{-- Mengarahkan ke halaman layanan dengan anchor #content-bantuan --}}
-                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-bantuan">
-                                        Pusat Bantuan (FAQ)
-                                    </a>
-                                </li>
-                                <li>
-                                    {{-- Mengarahkan ke halaman layanan dengan anchor #content-dokumen --}}
-                                    <a class="dropdown-item" href="{{ route('public.layanan') }}#content-dokumen">
-                                        Dokumen Publikasi
-                                    </a>
-                                </li>
+                                
                             </ul>
                         </li>
                         {{-- ▲▲▲ AKHIR MENU LAYANAN PUBLIK ▲▲▲ --}}
@@ -453,7 +498,7 @@
                     "Mewujudkan manajemen penyelenggaraan pemerintahan yang baik (good governance), efektif dan efisien, professional, transparan dan akuntabel."
                 </p>
                 
-                <img src="{{ asset('images/logo_pemprov.png') }}" alt="Logo Pemprov Riau" class="logo-img">
+                <img src="{{ asset('images/logo_pemprov.png') }}" alt="Logo Pemprov Riau">
 
                 <div class="logo-text">DINAS SOSIAL PROVINSI RIAU</div>
                 
