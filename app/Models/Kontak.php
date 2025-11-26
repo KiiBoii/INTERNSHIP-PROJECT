@@ -9,16 +9,22 @@ class Kontak extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Pastikan nama tabel benar (biasanya jamak/plural)
+    protected $table = 'kontaks';
+
+    // TAMBAHKAN 'status' DI SINI
     protected $fillable = [
         'nama',
         'email',
         'no_hp',
-        'isi_pengaduan', // Kita gunakan nama ini agar sesuai dengan form Anda
+        'isi_pengaduan',
         'foto_pengaduan',
+        'status', // <--- Wajib ada agar bisa di-update
+    ];
+
+    // Opsional: Casting status agar selalu string
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

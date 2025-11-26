@@ -18,7 +18,7 @@ use App\Http\Controllers\Public\PageController;
 // --- IMPORT CONTROLLER AUTH KUSTOM KITA ---
 use App\Http\Controllers\Auth\LoginController;
 
-// --- IMPORT MIDDLEWARE (UNTUK SOLUSI 2) ---
+// --- IMPORT MIDDLEWARE ---
 use App\Http\Middleware\PreventBackHistory;
 
 /*
@@ -32,59 +32,38 @@ Route::get('/', [PageController::class, 'home'])->name('public.home');
 Route::get('/profil', [PageController::class, 'profil'])->name('public.profil');
 Route::get('/profil-kepala-dinas', [PageController::class, 'profilKadis'])->name('public.profil.kadis');
 
-// --- Grup Halaman Berita (URUTAN DIPERBAIKI) ---
 Route::get('/berita', [PageController::class, 'berita'])->name('public.berita');
-// Route 'topik' yang spesifik HARUS ada SEBELUM route '{id}'
 Route::get('/berita/topik', [PageController::class, 'topik'])->name('public.berita.topik');
 Route::get('/berita/{id}', [PageController::class, 'showBerita'])->name('public.berita.detail');
-// --- Akhir Grup Berita ---
 
 Route::get('/layanan-publik', [PageController::class, 'layanan'])->name('public.layanan');
 Route::get('/galeri', [PageController::class, 'galeri'])->name('public.galeri');
 Route::get('/pengumuman', [PageController::class, 'pengumuman'])->name('public.pengumuman');
-
-// <-- RUTE FAQ -->
 Route::get('/faq', [PageController::class, 'faq'])->name('public.faq');
 
 Route::get('/kontak', [PageController::class, 'kontak'])->name('public.kontak');
 Route::post('/kontak', [PageController::class, 'storeKontak'])->name('public.kontak.store');
 
-
-// =========================================================================
-// ▼▼▼ [PERBAIKAN] RUTE PPID (MENAMBAHKAN SEMUA ROUTE YANG HILANG) ▼▼▼
-// =========================================================================
-
-// Rute PPID Level 1 dan Level 2 (Layanan, Jenis, SK)
+// --- RUTE PPID (Sesuai kode sebelumnya) ---
 Route::prefix('ppid')->name('public.ppid.')->group(function () {
-    // Route yang hilang dan menyebabkan error
     Route::get('/daftar-informasi-2025', [PageController::class, 'ppidDaftarInfo2025'])->name('daftar_info_2025');
     Route::get('/maklumat', [PageController::class, 'ppidMaklumat'])->name('maklumat');
     Route::get('/pengaduan-wewenang', [PageController::class, 'ppidPengaduanWewenang'])->name('pengaduan_wewenang');
     Route::get('/laporan', [PageController::class, 'ppidLaporanPpid'])->name('laporan_ppid');
-
-    // Rute Submenu: Layanan Informasi
     Route::get('/formulir-permohonan', [PageController::class, 'ppidFormulirPermohonan'])->name('formulir_permohonan');
     Route::get('/alur-sengketa', [PageController::class, 'ppidAlurSengketa'])->name('alur_sengketa');
     Route::get('/alur-hak-pengajuan', [PageController::class, 'ppidAlurHakPengajuan'])->name('alur_hak_pengajuan');
     Route::get('/alur-tata-cara', [PageController::class, 'ppidAlurTataCara'])->name('alur_tata_cara');
     Route::get('/formulir-keberatan', [PageController::class, 'ppidFormulirKeberatan'])->name('formulir_keberatan');
-    
-    // Rute Submenu: Jenis Informasi
     Route::get('/info-berkala', [PageController::class, 'ppidInfoBerkala'])->name('info_berkala');
     Route::get('/info-serta-merta', [PageController::class, 'ppidInfoSertaMerta'])->name('info_serta_merta');
     Route::get('/info-setiap-saat', [PageController::class, 'ppidInfoSetiapSaat'])->name('info_setiap_saat');
-    
-    // Rute Submenu: Surat Keputusan
     Route::get('/sk-terbaru', [PageController::class, 'ppidSKTerbaru'])->name('sk_terbaru');
     Route::get('/arsip-sk', [PageController::class, 'ppidArsipSK'])->name('arsip_sk');
-
-    // Rute Lainnya
     Route::get('/info-publik-lain', [PageController::class, 'ppidInfoPublikLain'])->name('info_publik_lain');
     Route::get('/jumlah-permohonan', [PageController::class, 'ppidJumlahPermohonan'])->name('jumlah_permohonan');
 });
 
-
-// Rute PPID Daftar Layanan Teknis (Sub-submenu Layanan Publik)
 Route::prefix('ppid/daftar-informasi')->name('public.ppid.')->group(function () {
     Route::get('/lansia-panti', [PageController::class, 'ppidLansiaPanti'])->name('lansia');
     Route::get('/anak-panti', [PageController::class, 'ppidAnakPanti'])->name('anakpanti');
@@ -99,81 +78,58 @@ Route::prefix('ppid/daftar-informasi')->name('public.ppid.')->group(function () 
     Route::get('/pengaduan-monitoring-pkh', [PageController::class, 'ppidPengaduanMonitoringPKH'])->name('pengaduanmonitoringpkh');
     Route::get('/pertimbangan-teknis-ugb-pub', [PageController::class, 'ppidPertimbanganTeknisUGBPUB'])->name('pertimbanganteknisugbpub');
 });
-// =========================================================================
-// ▲▲▲ AKHIR PERBAIKAN RUTE PPID ▲▲▲
-// =========================================================================
 
 
-// === RUTE AUTENTIKASI KUSTOM (LOGIN/LOGOUT) ===
+// === RUTE AUTENTIKASI ===
 Route::middleware('guest')->group(function () {
-    // (Spasi yang salah ' ' sudah diperbaiki menjadi spasi biasa)
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [LoginController::class, 'login']);
 });
 Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 
-// === GRUP UNTUK SEMUA HALAMAN ADMIN ===
-// Menggunakan prefix 'admin' dan nama 'admin.'
+// === GRUP ADMIN ===
 Route::middleware(['auth', 'role:admin,redaktur', PreventBackHistory::class])
     ->prefix('admin')
-    ->name('admin.') // <-- Menambahkan 'admin.' sebagai awalan nama
+    ->name('admin.')
     ->group(function () {
     
-    
-    // --- Rute yang bisa diakses KEDUA role (Admin & Redaktur) ---
+    // Admin & Redaktur
     Route::resource('berita', BeritaController::class)->parameter('berita', 'berita');
-    
-    // ▼▼▼ RUTE BARU UNTUK TOGGLE STATUS BERITA ▼▼▼
     Route::patch('berita/{berita}/toggle', [BeritaController::class, 'toggleStatus'])->name('berita.toggle');
-    // ▲▲▲ AKHIR RUTE BARU ▲▲▲
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     
-    // ▼▼▼ BLOK PERBAIKAN DASHBOARD ▼▼▼
-    // URL: /admin/dashboard
-    // NAMA: admin.dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard'); 
-    
-    // URL: /admin/dashboard/chart-data
-    // NAMA: admin.dashboard.chartData
     Route::get('dashboard/chart-data', [DashboardController::class, 'getChartData'])->name('dashboard.chartData');
-    
-    // URL: /admin/dashboard/activities
-    // NAMA: admin.dashboard.activities
     Route::get('dashboard/activities', [DashboardController::class, 'allActivities'])->name('dashboard.activities');
-    
-    // URL: /admin/dashboard/contributors
-    // NAMA: admin.dashboard.contributors
     Route::get('dashboard/contributors', [DashboardController::class, 'allContributors'])->name('dashboard.contributors');
-    // ▲▲▲ AKHIR BLOK PERBAIKAN ▲▲▲
 
-
-    // --- Rute yang HANYA bisa diakses oleh 'admin' ---
+    // HANYA ADMIN
     Route::middleware('role:admin')->group(function () {
         
-        // PERBAIKAN: Hapus 'Admin\' karena sudah di-import di atas
         Route::resource('dokumen', DokumenController::class)
             ->parameters(['dokumen' => 'dokumen'])
-            ->names('dokumen'); // <-- Nama sudah otomatis jadi 'admin.dokumen'
+            ->names('dokumen');
 
-        
         Route::resource('galeri', GaleriController::class);
         Route::resource('pengumuman', PengumumanController::class);
         Route::resource('karyawan', KaryawanController::class);
-        
-        Route::resource('pengaduan', PengaduanController::class)->only([
-            'index', 'destroy'
-        ]);
-        
-        Route::get('kontak', [PengaduanController::class, 'index'])->name('kontak.index');
-
         Route::resource('slider', SliderController::class);
         Route::patch('slider/{slider}/toggle', [SliderController::class, 'toggleStatus'])->name('slider.toggle');
+        
+        // ▼▼▼ PERBAIKAN RUTE PENGADUAN ▼▼▼
+        Route::get('kontak', [PengaduanController::class, 'index'])->name('kontak.index'); // Alias
+        
+        // Route Resource (Index & Destroy)
+        Route::resource('pengaduan', PengaduanController::class)->only(['index', 'destroy']);
+        
+        // Tambahkan Route KHUSUS untuk Update Status
+        Route::patch('pengaduan/{id}/update-status', [PengaduanController::class, 'updateStatus'])
+            ->name('pengaduan.update-status');
+        // ▲▲▲ SELESAI PERBAIKAN ▼▼▼
     
-    }); // Akhir grup 'role:admin'
-
-}); // Akhir grup 'auth'
+    }); 
+});

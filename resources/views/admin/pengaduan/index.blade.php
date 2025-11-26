@@ -1,148 +1,263 @@
 @extends('layouts.admin')
 
-@push('styles')
-<style>
-    .container-fluid {
-        background-color: #f0f4f8;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        min-height: 100vh;
-    }
-    .pengaduan-card {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .pengaduan-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-    }
-    .pengaduan-card::before {
-        content: '';
-        position: absolute;
-        top: -100px;
-        right: -80px;
-        width: 250px;
-        height: 250px;
-        background: var(--bs-primary);
-        opacity: 0.1;
-        border-radius: 50%;
-        z-index: 1;
-        transition: all 0.4s ease;
-    }
-    .pengaduan-card:hover::before {
-        transform: scale(1.2);
-        opacity: 0.15;
-    }
-    .pengaduan-card .card-body {
-        position: relative;
-        z-index: 2;
-    }
-    .pengaduan-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid var(--bs-primary);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-    }
-    .pengaduan-card .card-title {
-        color: var(--bs-primary);
-        font-weight: 700;
-    }
-    .pengaduan-card .card-subtitle {
-        font-size: 0.9rem;
-        color: #6c757d;
-    }
-    .pengaduan-card .card-text {
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
-    .card-actions {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-    }
-    .card-actions .dropdown-toggle::after {
-        display: none;
-    }
-    .card-actions .dropdown-menu {
-        font-size: 0.9rem;
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="container-fluid">
-    <h3 class="mb-2">Daftar Pengaduan Masyarakat</h3>
-    <p class="text-muted mb-4">Daftar pesan, keluhan, dan masukan yang dikirim oleh publik.</p>
+<div class="container-fluid px-4">
+    <h3 class="mt-4 mb-3">Daftar Pengaduan Masyarakat</h3>
     
+    {{-- TAB NAVIGASI STATUS (Tidak Berubah) --}}
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+            <ul class="nav nav-tabs card-header-tabs" id="statusTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == null || request('status') == 'semua' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'semua']) }}">
+                        Semua <span class="badge bg-secondary rounded-pill ms-1">{{ $counts['semua'] ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'diajukan' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'diajukan']) }}">
+                        Diajukan <span class="badge bg-info text-dark rounded-pill ms-1">{{ $counts['diajukan'] ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'diproses' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'diproses']) }}">
+                        Diproses <span class="badge bg-warning text-dark rounded-pill ms-1">{{ $counts['diproses'] ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'diterima' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'diterima']) }}">
+                        Diterima <span class="badge bg-primary rounded-pill ms-1">{{ $counts['diterima'] ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'selesai' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'selesai']) }}">
+                        Selesai <span class="badge bg-success rounded-pill ms-1">{{ $counts['selesai'] ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') == 'ditolak' ? 'active fw-bold text-primary' : 'text-muted' }}" 
+                       href="{{ route('admin.pengaduan.index', ['status' => 'ditolak']) }}">
+                        Ditolak <span class="badge bg-danger rounded-pill ms-1">{{ $counts['ditolak'] ?? 0 }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 5%">No</th>
+                            <th scope="col" style="width: 15%">Tanggal</th>
+                            <th scope="col" style="width: 20%">Pelapor</th>
+                            <th scope="col" style="width: 30%">Judul / Isi Laporan</th>
+                            <th scope="col" style="width: 10%">Status</th>
+                            <th scope="col" style="width: 20%" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($pengaduans as $index => $item)
+                        <tr>
+                            <td>{{ $pengaduans->firstItem() + $index }}</td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    {{-- Timezone Fix --}}
+                                    <span class="fw-bold">{{ $item->created_at->timezone('Asia/Jakarta')->format('d M Y') }}</span>
+                                    <small class="text-muted">{{ $item->created_at->timezone('Asia/Jakarta')->format('H:i') }} WIB</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if($item->foto_pengaduan)
+                                        <img src="{{ asset($item->foto_pengaduan) }}" alt="Foto" class="rounded-circle me-2 border" style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2 border" style="width: 40px; height: 40px; font-weight: bold;">
+                                            {{ strtoupper(substr($item->nama, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold text-dark">{{ $item->nama }}</span>
+                                        <small class="text-muted" style="font-size: 0.8rem;">{{ $item->no_hp ?? '-' }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="d-inline-block text-truncate text-muted" style="max-width: 250px;">
+                                    {{ $item->isi_pengaduan }}
+                                </span>
+                            </td>
+                            <td>
+                                @php
+                                    $statusClass = match($item->status) {
+                                        'diajukan' => 'bg-secondary',
+                                        'diproses' => 'bg-warning text-dark',
+                                        'diterima' => 'bg-primary',
+                                        'selesai' => 'bg-success',
+                                        'ditolak' => 'bg-danger',
+                                        default => 'bg-secondary'
+                                    };
+                                @endphp
+                                <span class="badge {{ $statusClass }} rounded-pill px-3 py-2 text-uppercase" style="font-size: 0.7rem;">
+                                    {{ $item->status ?? 'Diajukan' }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    {{-- TOMBOL DETAIL --}}
+                                    <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id }}" title="Detail & Foto">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
 
+                                    {{-- DROPDOWN UBAH STATUS --}}
+                                    <div class="btn-group">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-warning dropdown-toggle" 
+                                                data-bs-toggle="dropdown" 
+                                                aria-expanded="false" 
+                                                data-bs-boundary="viewport"
+                                                data-bs-popper-config='{"strategy":"fixed"}'
+                                                title="Ubah Status">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                                            <li><h6 class="dropdown-header">Ubah Status</h6></li>
+                                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('status-diproses-{{ $item->id }}').submit();">Diproses</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('status-diterima-{{ $item->id }}').submit();">Diterima</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('status-selesai-{{ $item->id }}').submit();">Selesai</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('status-ditolak-{{ $item->id }}').submit();">Ditolak</a></li>
+                                        </ul>
+                                    </div>
 
-    <div class="row">
-        @forelse ($pengaduans as $pengaduan)
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card pengaduan-card h-100">
-                    <div class="card-body text-center d-flex flex-column">
-                        
-                        <div class="dropdown card-actions">
-                            <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <form action="{{ route('admin.pengaduan.destroy', $pengaduan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pesan ini?');">
+                                    {{-- TOMBOL HAPUS --}}
+                                    <form action="{{ route('admin.pengaduan.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-trash me-2"></i> Hapus
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
-                                </li>
-                            </ul>
-                        </div>
+                                </div>
 
-                        @if($pengaduan->foto_pengaduan)
-                            {{-- ▼▼▼ PERBAIKAN: Hapus 'storage/' . ▼▼▼ --}}
-                            <img src="{{ asset($pengaduan->foto_pengaduan) }}" class="pengaduan-avatar" alt="Foto Pengaduan">
-                        @else
-                            <img src="https://placehold.co/100x100/007bff/white?text={{ strtoupper(substr($pengaduan->nama, 0, 2)) }}" class="pengaduan-avatar" alt="Avatar">
-                        @endif
-                        
-                        <h5 class="card-title mb-1">{{ $pengaduan->nama }}</h5>
-                        <p class="card-subtitle mb-3">
-                            {{ $pengaduan->email }}
-                            @if($pengaduan->no_hp)
-                                | {{ $pengaduan->no_hp }}
+                                {{-- FORM UPDATE STATUS HIDDEN --}}
+                                <form id="status-diproses-{{ $item->id }}" action="{{ route('admin.pengaduan.update-status', $item->id) }}" method="POST" class="d-none">
+                                    @csrf @method('PATCH') <input type="hidden" name="status" value="diproses">
+                                </form>
+                                <form id="status-diterima-{{ $item->id }}" action="{{ route('admin.pengaduan.update-status', $item->id) }}" method="POST" class="d-none">
+                                    @csrf @method('PATCH') <input type="hidden" name="status" value="diterima">
+                                </form>
+                                <form id="status-selesai-{{ $item->id }}" action="{{ route('admin.pengaduan.update-status', $item->id) }}" method="POST" class="d-none">
+                                    @csrf @method('PATCH') <input type="hidden" name="status" value="selesai">
+                                </form>
+                                <form id="status-ditolak-{{ $item->id }}" action="{{ route('admin.pengaduan.update-status', $item->id) }}" method="POST" class="d-none">
+                                    @csrf @method('PATCH') <input type="hidden" name="status" value="ditolak">
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted bg-light">
+                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                    <i class="bi bi-inbox fs-1 mb-2 text-secondary"></i>
+                                    <span>Belum ada data pengaduan {{ $status != 'semua' ? 'dengan status '.ucfirst($status) : '' }}.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            {{-- ▼▼▼ PERBAIKAN: Custom Pagination Link ▼▼▼ --}}
+            <div class="d-flex justify-content-center mt-4">
+                {!! $pengaduans->withQueryString()->links('vendor.pagination.custom-circle') !!}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL AREA (Tidak Ada Perubahan) --}}
+@foreach($pengaduans as $item)
+    @php
+        $statusClassModal = match($item->status) {
+            'diajukan' => 'bg-secondary',
+            'diproses' => 'bg-warning text-dark',
+            'diterima' => 'bg-primary',
+            'selesai' => 'bg-success',
+            'ditolak' => 'bg-danger',
+            default => 'bg-secondary'
+        };
+    @endphp
+    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel{{ $item->id }}">Detail Pengaduan #{{ $item->id }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-5 mb-3 text-center">
+                            @if($item->foto_pengaduan)
+                                <img src="{{ asset($item->foto_pengaduan) }}" class="img-fluid rounded shadow-sm border" alt="Bukti Foto" style="max-height: 300px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                                <div class="mt-2">
+                                    <a href="{{ asset($item->foto_pengaduan) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-zoom-in"></i> Lihat Ukuran Penuh
+                                    </a>
+                                </div>
+                            @else
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 bg-light rounded border py-5">
+                                    <i class="bi bi-image-alt fs-1 text-muted"></i>
+                                    <p class="text-muted mt-2">Tidak ada foto dilampirkan</p>
+                                </div>
                             @endif
-                        </p>
-
-                        <p class="card-text text-muted">
-                            "{{ Str::limit($pengaduan->isi_pengaduan, 150) }}"
-                        </p>
-                        
-                        <div class="mt-auto">
-                            <small class="d-block text-muted">{{ $pengaduan->created_at->format('d F Y, H:i') }}</small>
+                        </div>
+                        <div class="col-lg-7">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td class="text-muted" width="35%">Status</td>
+                                    <td>: <span class="badge {{ $statusClassModal }}">{{ strtoupper($item->status ?? 'Diajukan') }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Tanggal</td>
+                                    <td>: {{ $item->created_at->timezone('Asia/Jakarta')->format('d F Y H:i') }} WIB</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr class="my-1"></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Nama Pelapor</td>
+                                    <td class="fw-bold">: {{ $item->nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Email</td>
+                                    <td>: {{ $item->email }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">No. HP</td>
+                                    <td>: {{ $item->no_hp ?? '-' }}</td>
+                                </tr>
+                            </table>
+                            <div class="card bg-light border-0 mt-2">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary"><i class="bi bi-chat-left-text me-2"></i>Isi Laporan</h6>
+                                    <p class="card-text text-dark" style="white-space: pre-line; text-align: justify;">{{ $item->isi_pengaduan }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-secondary text-center">
-                    Belum ada pesan atau pengaduan yang masuk.
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
-        @endforelse
+        </div>
     </div>
+@endforeach
 
-    <div class="d-flex justify-content-center mt-4">
-        {!! $pengaduans->links() !!}
-    </div>
-
-</div>
 @endsection
