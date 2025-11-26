@@ -331,32 +331,47 @@
                             <a class="nav-link {{ request()->routeIs('public.berita') ? 'active' : '' }}" href="{{ route('public.berita') }}">Berita</a>
                         </li>
                         
-                        {{-- ▼▼▼ MENU PPID DROPDOWN (STRUKTUR BARU SESUAI GAMBAR) ▼▼▼ --}}
-<li class="nav-item dropdown">
-    <a class="nav-link 
-        {{ request()->routeIs('public.ppid.*') || request()->is('ppid/*') ? 'active' : '' }}" 
-        href="#" id="ppidDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        PPID
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="ppidDropdown">
+                        {{-- ▼▼▼ MENU PPID DROPDOWN (DIUPDATE: SEMUA LINK KE G-DRIVE) ▼▼▼ --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link 
+                                {{ request()->routeIs('public.ppid.*') || request()->is('ppid/*') ? 'active' : '' }}" 
+                                href="#" id="ppidDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                PPID
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="ppidDropdown">
                                 
-                                {{-- DIUBAH: Daftar Informasi Publik 2025 dengan tautan ke route --}}
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.daftar_info_2025') }}">Daftar Informasi Publik 2025</a></li> 
+                                {{-- Item Level 1 --}}
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Daftar Informasi Publik 2025
+                                    </a>
+                                </li> 
                                 
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.maklumat') }}">Maklumat Layanan Informasi</a></li>
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.pengaduan_wewenang') }}">Pengaduan Penyalahgunaan Wewenang</a></li>
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.laporan_ppid') }}">Laporan PPID</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Maklumat Layanan Informasi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Pengaduan Penyalahgunaan Wewenang
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Laporan PPID
+                                    </a>
+                                </li>
                                 
                                 {{-- Layanan Informasi (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Layanan Informasi</a>
                                     <ul class="dropdown-menu">
-                                        {{-- ISI BARU SESUAI GAMBAR DITERAPKAN --}}
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.formulir_permohonan') }}">Formulir Permohonan Informasi</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_sengketa') }}">Alur Penyelesaian Sengketa Informasi</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_hak_pengajuan') }}">Alur Hak Dan Tata Cara Pengajuan Keberatan Dan Pengajuan Sengketa Informasi</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.alur_tata_cara') }}">Alur Tata Cara Dan Hak Permohonan Informasi</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.formulir_keberatan') }}">Formulir Keberatan</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Formulir Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Alur Penyelesaian Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Alur Hak Dan Tata Cara Pengajuan Keberatan Dan Pengajuan Sengketa Informasi</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Alur Tata Cara Dan Hak Permohonan Informasi</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Formulir Keberatan</a></li>
                                     </ul>
                                 </li>
                                 
@@ -364,35 +379,43 @@
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Jenis Informasi</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_berkala') }}">Informasi Berkala</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_serta_merta') }}">Informasi Serta Merta</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.info_setiap_saat') }}">Informasi Setiap Saat</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Informasi Berkala</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Informasi Serta Merta</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Informasi Setiap Saat</a></li>
                                     </ul>
                                 </li>
                                 {{-- Surat Keputusan (Level 2/Submenu) --}}
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item" href="#">Surat Keputusan</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.sk_terbaru') }}">SK Terbaru</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('public.ppid.arsip_sk') }}">Arsip SK</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">SK Terbaru</a></li>
+                                        <li><a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">Arsip SK</a></li>
                                     </ul>
                                 </li>
                                 
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.info_publik_lain') }}">Informasi Publik Lain</a></li>
-                                <li><a class="dropdown-item" href="{{ route('public.ppid.jumlah_permohonan') }}">Jumlah Permohonan Informasi</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Informasi Publik Lain
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
+                                        Jumlah Permohonan Informasi
+                                    </a>
+                                </li>
                                 
                             </ul>
                         </li>
                         {{-- ▲▲▲ AKHIR MENU PPID DROPDOWN ▲▲▲ --}}
                         
-                        {{-- ▼▼▼ MENU LAYANAN PUBLIK (DIKEMBALIKAN KE STRUKTUR SEDERHANA) ▼▼▼ --}}
-<li class="nav-item dropdown">
-    <a class="nav-link 
-        {{ request()->routeIs('public.layanan') || request()->is('layanan-publik') || request()->is('ppid/daftar-informasi/*') ? 'active' : '' }}" 
-        href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Layanan Publik
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="layananDropdown">
+                        {{-- ▼▼▼ MENU LAYANAN PUBLIK ▼▼▼ --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link 
+                                {{ request()->routeIs('public.layanan') || request()->is('layanan-publik') || request()->is('ppid/daftar-informasi/*') ? 'active' : '' }}" 
+                                href="{{ route('public.layanan') }}" id="layananDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Layanan Publik
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="layananDropdown">
                                 
                                 {{-- Item bawaan Layanan Publik --}}
                                 <li>
@@ -406,7 +429,7 @@
                                     </a>
                                 </li>
 
-                                {{-- TAMBAHAN BARU: LINK KE GOOGLE DRIVE --}}
+                                {{-- LINK KE GOOGLE DRIVE (Yang diminta sebelumnya) --}}
                                 <li>
                                     <a class="dropdown-item" href="https://drive.google.com/drive/folders/1ONJjk_QyIPJeZtNN0yx2X5oATgzEaQx_" target="_blank">
                                         RKA Dinas Social Provinsi
@@ -443,7 +466,7 @@
                             <a class="nav-link {{ request()->routeIs('public.pengumuman') ? 'active' : '' }}" href="{{ route('public.pengumuman') }}">Pengumuman</a>
                         </li>
                         
-                        {{-- ▼▼▼ MENU FAQ (LINK TERPISAH) - Dikembalikan seperti permintaan ▼▼▼ --}}
+                        {{-- ▼▼▼ MENU FAQ (LINK TERPISAH) ▼▼▼ --}}
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('public.faq') ? 'active' : '' }}" href="{{ route('public.faq') }}">FAQ</a>
                         </li>
@@ -508,7 +531,6 @@
                     "Mewujudkan manajemen penyelenggaraan pemerintahan yang baik (good governance), efektif dan efisien, professional, transparan dan akuntabel."
                 </p>
                 
-                {{-- UPDATE DISINI: Menambahkan class="logo-img" agar CSS max-height: 50px bekerja --}}
                 <img src="{{ asset('images/logo_pemprov.png') }}" alt="Logo Pemprov Riau" class="logo-img">
 
                 <div class="logo-text">DINAS SOSIAL PROVINSI RIAU</div>
