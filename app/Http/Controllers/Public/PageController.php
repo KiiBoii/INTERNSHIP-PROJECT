@@ -226,8 +226,10 @@ class PageController extends Controller
                                      ->inRandomOrder() 
                                      ->take(5) // Diambil 5 saja cukup untuk sidebar
                                      ->get();
-                                     
-        return view('public.berita.detail', compact('berita', 'topik_lainnya')); 
+        
+        // ▼▼▼ UPDATED: Pastikan nama filenya 'berita_detail' (bukan 'berita.detail') ▼▼▼
+        // Pastikan file Anda ada di: resources/views/public/berita_detail.blade.php
+        return view('public.berita_detail', compact('berita', 'topik_lainnya')); 
     }
 
     // =========================================================================
