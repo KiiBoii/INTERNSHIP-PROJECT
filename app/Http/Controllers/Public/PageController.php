@@ -202,7 +202,7 @@ class PageController extends Controller
             'email' => 'required|email|max:255',
             'no_hp' => 'nullable|string|max:20', 
             'isi_pengaduan' => 'required|string',
-            'foto_pengaduan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_pengaduan' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('foto_pengaduan')) {

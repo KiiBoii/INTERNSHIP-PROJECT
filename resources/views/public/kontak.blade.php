@@ -177,9 +177,11 @@
 
                         {{-- Field Upload Foto --}}
                         <div class="mb-3">
-                            <label for="foto_pengaduan" class="form-label">Foto (Opsional)</label>
-                            <input type="file" class="form-control @error('foto_pengaduan') is-invalid @enderror" id="foto_pengaduan" name="foto_pengaduan" accept="image/*">
-                            <small class="text-muted">Max 2MB. Lampirkan foto jika diperlukan (misal: bukti, KTP, dll)</small>
+                            <label for="foto_pengaduan" class="form-label">Foto (Wajib) <span class="text-danger">*</span></label>
+                            {{-- UPDATED: Menambahkan atribut required --}}
+                            <input type="file" class="form-control @error('foto_pengaduan') is-invalid @enderror" id="foto_pengaduan" name="foto_pengaduan" accept="image/*" required>
+                            {{-- UPDATED: Mengubah teks small agar tidak membingungkan --}}
+                            <small class="text-muted">Max 2MB. Wajib melampirkan foto bukti pengaduan.</small>
                             @error('foto_pengaduan') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
